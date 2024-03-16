@@ -39,3 +39,5 @@ jobs:
         git add index.html
         git commit -m "Update index.html"
         git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.SHOP_PUBLICATIONS_AUT }}
