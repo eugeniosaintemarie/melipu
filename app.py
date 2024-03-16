@@ -112,32 +112,8 @@ def generar_html(resultados):
 
 
 def main():
-    enlaces = [
-        {
-            "link": "https://www.mercadolibre.com.ar/gamepad-redragon-harrow-pro-wireless-g808pro-joystick-pc-ps3-color-negro/p/MLA27921678#polycard_client=bookmarks&wid=MLA1600354692&sid=bookmarks",
-        },
-        {
-            "link": "https://moto.mercadolibre.com.ar/MLA-1626743114-zanella-ceccato-r150-cafe-racer-motozuni-_JM#polycard_client=bookmarks",
-        },
-        {
-            "link": "https://www.mercadolibre.com.ar/casco-moto-ls2-integral-320-evo-negro-mate-doble-visor-tamano-del-casco-xl/p/MLA24045739#polycard_client=bookmarks&wid=MLA1437224074&sid=bookmarks",
-        },
-        {
-            "link": "https://articulo.mercadolibre.com.ar/MLA-1395820361-campera-ls2-alba-hombre-mesh-verano-ventilada-moto-delta-_JM#polycard_client=bookmarks",
-        },
-        {
-            "link": "https://articulo.mercadolibre.com.ar/MLA-1275154314-jardinero-de-jeans-hombre-con-roturas-_JM#polycard_client=bookmarks",
-        },
-        {
-            "link": "https://www.mercadolibre.com.ar/montblanc-legend-edt-100ml-para-hombre/p/MLA5225009#polycard_client=bookmarks&wid=MLA1288452290&sid=bookmarks",
-        },
-        {
-            "link": "https://www.mercadolibre.com.ar/set-armani-acqua-di-gio-edt-100-ml-deo-after-shave/p/MLA29269071#polycard_client=bookmarks&wid=MLA1675592798&sid=bookmarks",
-        },
-        # {
-        #   "link": "",
-        # },
-    ]
+    with open('links.txt', 'r') as file:
+        enlaces = [line.strip() for line in file]
 
     precios_guardados = {}
 
