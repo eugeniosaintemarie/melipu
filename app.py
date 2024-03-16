@@ -177,7 +177,7 @@ def main():
     with open("index.html", "w", encoding="utf-8") as html_file:
         html_file.write(html_content)
 
-    time.sleep(60 * 60)
+    #time.sleep(60 * 60)
 
 
 if __name__ == "__main__":
