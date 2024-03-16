@@ -53,7 +53,7 @@ def generar_html(resultados):
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Resultados de Precios</title>
+        <title>Publicaciones precios</title>
         <style>
             body { font-family: Arial, sans-serif; }
             .item { margin-bottom: 20px; }
@@ -97,12 +97,14 @@ def main():
                 print(f"• {nombre_publicacion}")
                 print(f"   Precio: {precio_nuevo}")
                 precios_guardados[enlace] = precio_nuevo
+                resultados.append((nombre_publicacion, precio_nuevo))
             elif precio_nuevo != precios_guardados[enlace]:
                 print(f"• {nombre_publicacion}")
                 print(f" -Precio anterior: {precios_guardados[enlace]}")
                 print(f" +Precio nuevo:    {precio_nuevo}")
                 print("-------------------------")
                 precios_guardados[enlace] = precio_nuevo
+                resultados.append((nombre_publicacion, precio_nuevo))
 
     html_content = generar_html(resultados)
     with open("index.html", "w", encoding="utf-8") as html_file:
