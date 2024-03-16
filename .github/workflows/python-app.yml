@@ -1,13 +1,13 @@
 name: Shop publications
 
-#on:
-#  push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
+on:
+  push:
+    branches: [ "gh-pages" ]
+  pull_request:
+    branches: [ "gh-pages" ]
 
-#permissions:
-#  contents: write
+permissions:
+  contents: write
 
 jobs:
   build:
