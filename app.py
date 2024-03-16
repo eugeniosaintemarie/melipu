@@ -142,6 +142,7 @@ def main():
     precios_guardados = {}
 
     while True:
+        resultados = []
         for enlace_info in enlaces:
             link = enlace_info["link"]
             resultado_obtencion = obtener_nombre_y_precio(link)
