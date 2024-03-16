@@ -141,43 +141,43 @@ def main():
 
     precios_guardados = {}
 
-    while True:
-        resultados = []
-        for enlace_info in enlaces:
-            link = enlace_info["link"]
-            resultado_obtencion = obtener_nombre_y_precio(link)
+    #while True:
+    resultados = []
+    for enlace_info in enlaces:
+        link = enlace_info["link"]
+        resultado_obtencion = obtener_nombre_y_precio(link)
 
-            if resultado_obtencion:
-                nombre_publicacion, precio_nuevo = resultado_obtencion
-                nombre_publicacion = nombre_publicacion[:32] + "..."
-                if link not in precios_guardados:
-                    print(color_amarillo + f"• {nombre_publicacion}" + color_reset)
-                    print(color_celeste + f"   Precio: {precio_nuevo}" + color_reset)
-                    # print(f"     ")
-                    precios_guardados[link] = precio_nuevo
-                elif precio_nuevo != precios_guardados[link]:
-                    print(color_amarillo + f"• {nombre_publicacion}")
-                    print(
-                        color_azul
-                        + f"  -Precio anterior: {precios_guardados[link]}"
-                        + color_reset
-                    )
-                    print(
-                        color_naranja
-                        + f"  +Precio nuevo:    {precio_nuevo}"
-                        + color_reset
-                    )
-                    print(f"-------------------------")
-                    # mostrar_notificacion(
-                    #    nombre_publicacion, precios_guardados[link], precio_nuevo
-                    # )
-                    precios_guardados[link] = precio_nuevo
+        if resultado_obtencion:
+            nombre_publicacion, precio_nuevo = resultado_obtencion
+            nombre_publicacion = nombre_publicacion[:32] + "..."
+            if link not in precios_guardados:
+                print(color_amarillo + f"• {nombre_publicacion}" + color_reset)
+                print(color_celeste + f"   Precio: {precio_nuevo}" + color_reset)
+                # print(f"     ")
+                precios_guardados[link] = precio_nuevo
+            elif precio_nuevo != precios_guardados[link]:
+                print(color_amarillo + f"• {nombre_publicacion}")
+                print(
+                    color_azul
+                    + f"  -Precio anterior: {precios_guardados[link]}"
+                    + color_reset
+                )
+                print(
+                    color_naranja
+                    + f"  +Precio nuevo:    {precio_nuevo}"
+                    + color_reset
+                )
+                print(f"-------------------------")
+                # mostrar_notificacion(
+                #    nombre_publicacion, precios_guardados[link], precio_nuevo
+                # )
+                precios_guardados[link] = precio_nuevo
 
-        html_content = generar_html(resultados)
-        with open("index.html", "w", encoding="utf-8") as html_file:
-            html_file.write(html_content)
+    html_content = generar_html(resultados)
+    with open("index.html", "w", encoding="utf-8") as html_file:
+        html_file.write(html_content)
 
-        time.sleep(60 * 60)
+    time.sleep(60 * 60)
 
 
 if __name__ == "__main__":
