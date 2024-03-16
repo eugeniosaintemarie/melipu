@@ -34,9 +34,8 @@ jobs:
         python app.py
     - name: Commit and push index.html
       run: |
-        git config --global user.name 'eugeniosaintemarie'
-        git config --global user.email 'e.saintemarie@outlook.com'
-        git add index.html
-        git commit -m "Update index.html"
-        git push
-        git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git
+          git config --global user.name 'eugeniosaintemarie'
+          git config --global user.email 'e.saintemarie@outlook.com'
+          git add index.html
+          git commit -m "Update index.html"
+          git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git
