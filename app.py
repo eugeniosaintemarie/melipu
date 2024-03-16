@@ -84,8 +84,8 @@ def generar_html(resultados):
         nombre_publicacion, precio_nuevo = resultado
         html_content += f"""
         <div class="item">
-            <div class="nombre">Índice: {index} - {nombre_publicacion}</div>
-            <div class="precio">Precio: {precio_nuevo}</div>
+            <div class="nombre">{nombre_publicacion}</div>
+            <div class="precio">Precio: ${precio_nuevo}</div>
         </div>
         """
 
