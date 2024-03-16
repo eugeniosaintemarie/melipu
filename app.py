@@ -53,25 +53,37 @@ def generar_html(resultados):
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Publicaciones precios</title>
+        <title>Publicaciones-Precios</title>
+        <link rel="icon" type="image/svg+xml" href="https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/5.21.22/mercadolibre/favicon.svg">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <style>
-            body { font-family: Arial, sans-serif; }
+            body { font-family: 'Roboto', Arial, sans-serif; }
             .item { margin-bottom: 20px; }
             .nombre { font-weight: bold; }
             .precio { color: green; }
+            .precio_anterior { color: red; }
         </style>
     </head>
     <body>
     """
 
     for index, resultado in enumerate(resultados, start=1):
-        nombre_publicacion, precio_nuevo = resultado
-        html_content += f"""
-        <div class="item">
-            <div class="nombre">{nombre_publicacion}</div>
-            <div class="precio">Precio: ${precio_nuevo}</div>
-        </div>
-        """
+        nombre_publicacion, precio_nuevo, precio_anterior = resultado
+        if precio_anterior:
+            html_content += f"""
+            <div class="item">
+                <div class="nombre">{nombre_publicacion}</div>
+                <div class="precio">Precio actual: ${precio_nuevo}</div>
+                <div class="precio_anterior">Precio anterior: ${precio_anterior}</div>
+            </div>
+            """
+        else:
+            html_content += f"""
+            <div class="item">
+                <div class="nombre">{nombre_publicacion}</div>
+                <div class="precio">Precio: ${precio_nuevo}</div>
+            </div>
+            """
 
     html_content += """
     </body>
@@ -94,17 +106,23 @@ def main():
             nombre_publicacion, precio_nuevo = resultado_obtencion
             nombre_publicacion = nombre_publicacion[:32] + "..."
             if enlace not in precios_guardados:
-                print(f"• {nombre_publicacion}")
-                print(f"   Precio: {precio_nuevo}")
-                precios_guardados[enlace] = precio_nuevo
-                resultados.append((nombre_publicacion, precio_nuevo))
-            elif precio_nuevo != precios_guardados[enlace]:
-                print(f"• {nombre_publicacion}")
-                print(f" -Precio anterior: {precios_guardados[enlace]}")
-                print(f" +Precio nuevo:    {precio_nuevo}")
-                print("-------------------------")
-                precios_guardados[enlace] = precio_nuevo
-                resultados.append((nombre_publicacion, precio_nuevo))
+                precios_guardados[enlace] = {
+                    "precio_actual": precio_nuevo,
+                    "precio_anterior": None,
+                }
+                resultados.append((nombre_publicacion, precio_nuevo, None))
+            elif precio_nuevo != precios_guardados[enlace]["precio_actual"]:
+                precios_guardados[enlace]["precio_anterior"] = precios_guardados[
+                    enlace
+                ]["precio_actual"]
+                precios_guardados[enlace]["precio_actual"] = precio_nuevo
+                resultados.append(
+                    (
+                        nombre_publicacion,
+                        precio_nuevo,
+                        precios_guardados[enlace]["precio_anterior"],
+                    )
+                )
 
     html_content = generar_html(resultados)
     with open("index.html", "w", encoding="utf-8") as html_file:
