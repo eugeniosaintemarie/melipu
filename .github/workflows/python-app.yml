@@ -1,13 +1,13 @@
 name: Shop publications
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+#on:
+#  push:
+#    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
 
-permissions:
-  contents: read
+#permissions:
+#  contents: write
 
 jobs:
   build:
@@ -34,8 +34,13 @@ jobs:
         python app.py
     - name: Commit and push index.html
       run: |
-        git config --global user.name 'eugeniosaintemarie'
-        git config --global user.email 'e.saintemarie@outlook.com'
-        git add index.html
-        git commit -m "Update index.html"
-        git push
+          git config --global user.name 'eugeniosaintemarie'
+          git config --global user.email 'e.saintemarie@outlook.com'
+          git add index.html
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update index.html"
+#            git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git
+            git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git gh-pages
+          fi
