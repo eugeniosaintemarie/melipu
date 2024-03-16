@@ -73,8 +73,8 @@ def obtener_nombre_y_precio(link):
 #    )
 
 
-def simular_variacion_de_precio():
-    mostrar_notificacion("Producto de prueba", "$10.000", "$20.000")
+#def simular_variacion_de_precio():
+#    mostrar_notificacion("Producto de prueba", "$10.000", "$20.000")
 
 
 def main():
@@ -133,9 +133,9 @@ def main():
                         + color_reset
                     )
                     print(f"-------------------------")
-                    mostrar_notificacion(
-                        nombre_publicacion, precios_guardados[link], precio_nuevo
-                    )
+                    #mostrar_notificacion(
+                    #    nombre_publicacion, precios_guardados[link], precio_nuevo
+                    #)
                     precios_guardados[link] = precio_nuevo
 
         time.sleep(60 * 60)
