@@ -172,6 +172,7 @@ def main():
                 #    nombre_publicacion, precios_guardados[link], precio_nuevo
                 # )
                 precios_guardados[link] = precio_nuevo
+            resultados.append((nombre_publicacion, precio_nuevo))
 
     html_content = generar_html(resultados)
     with open("index.html", "w", encoding="utf-8") as html_file:
