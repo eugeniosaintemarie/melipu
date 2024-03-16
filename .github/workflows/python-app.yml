@@ -1,14 +1,5 @@
 name: Shop publications
 
-#on:
-#  push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
-
-#permissions:
-#  contents: write
-
 jobs:
   build:
 
@@ -41,6 +32,5 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Update index.html"
-#            git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git
             git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git gh-pages
           fi
