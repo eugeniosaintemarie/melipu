@@ -1,9 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-#import time
-
-# import ctypes
-# from win10toast import ToastNotifier
 
 color_reset = "\033[0m"
 color_rojo = "\033[91m"
@@ -12,18 +8,6 @@ color_azul = "\033[94m"
 color_celeste = "\033[96m"
 color_amarillo = "\033[93m"
 color_verde = "\033[92m"
-
-
-# ctypes.windll.kernel32.SetConsoleTitleW("shop-publications")
-
-
-# def parpadear_vetana():
-#    try:
-#        ctypes.windll.user32.FlashWindow(
-#            ctypes.windll.kernel32.GetConsoleWindow(), True
-#        )
-#    except ImportError:
-#        pass
 
 
 def obtener_nombre_y_precio(link):
@@ -97,66 +81,33 @@ def generar_html(resultados):
     return html_content
 
 
-# def mostrar_notificacion(nombre, precio_nuevo, precio_anterior):
-#    parpadear_vetana()
-#    toaster = ToastNotifier()
-#    toaster.show_toast(
-#        nombre,
-#        f"Precio nuevo: {precio_nuevo}\nPrecio anterior: {precio_anterior}",
-#        duration=10,
-#    )
-
-
-# def simular_variacion_de_precio():
-#    mostrar_notificacion("Producto de prueba", "$10.000", "$20.000")
-
-
 def main():
-    with open('links.txt', 'r') as file:
+    with open("links.txt", "r") as file:
         enlaces = [line.strip() for line in file]
 
     precios_guardados = {}
-
-    #while True:
     resultados = []
-    for enlace_info in enlaces:
-        link = enlace_info["link"]
-        resultado_obtencion = obtener_nombre_y_precio(link)
 
+    for enlace in enlaces:
+        resultado_obtencion = obtener_nombre_y_precio(enlace)
         if resultado_obtencion:
             nombre_publicacion, precio_nuevo = resultado_obtencion
             nombre_publicacion = nombre_publicacion[:32] + "..."
-            if link not in precios_guardados:
-                print(color_amarillo + f"• {nombre_publicacion}" + color_reset)
-                print(color_celeste + f"   Precio: {precio_nuevo}" + color_reset)
-                # print(f"     ")
-                precios_guardados[link] = precio_nuevo
-            elif precio_nuevo != precios_guardados[link]:
-                print(color_amarillo + f"• {nombre_publicacion}")
-                print(
-                    color_azul
-                    + f"  -Precio anterior: {precios_guardados[link]}"
-                    + color_reset
-                )
-                print(
-                    color_naranja
-                    + f"  +Precio nuevo:    {precio_nuevo}"
-                    + color_reset
-                )
-                print(f"-------------------------")
-                # mostrar_notificacion(
-                #    nombre_publicacion, precios_guardados[link], precio_nuevo
-                # )
-                precios_guardados[link] = precio_nuevo
-            resultados.append((nombre_publicacion, precio_nuevo))
+            if enlace not in precios_guardados:
+                print(f"• {nombre_publicacion}")
+                print(f"   Precio: {precio_nuevo}")
+                precios_guardados[enlace] = precio_nuevo
+            elif precio_nuevo != precios_guardados[enlace]:
+                print(f"• {nombre_publicacion}")
+                print(f" -Precio anterior: {precios_guardados[enlace]}")
+                print(f" +Precio nuevo:    {precio_nuevo}")
+                print("-------------------------")
+                precios_guardados[enlace] = precio_nuevo
 
     html_content = generar_html(resultados)
     with open("index.html", "w", encoding="utf-8") as html_file:
         html_file.write(html_content)
 
-    #time.sleep(60 * 60)
-
 
 if __name__ == "__main__":
-    # simular_variacion_de_precio()
     main()
