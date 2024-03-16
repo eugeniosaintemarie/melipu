@@ -81,7 +81,7 @@ def generar_html(resultados):
             html_content += f"""
             <div class="item">
                 <div class="nombre">{nombre_publicacion}</div>
-                <div class="precio">Precio: ${precio_nuevo}</div>
+                <div class="precio">Precio actual: ${precio_nuevo}</div>
             </div>
             """
 
