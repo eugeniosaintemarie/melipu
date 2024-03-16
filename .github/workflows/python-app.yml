@@ -39,3 +39,4 @@ jobs:
           git add index.html
           git commit -m "Update index.html"
           git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git
+          git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git gh-pages
