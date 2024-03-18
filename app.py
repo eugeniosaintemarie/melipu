@@ -10,18 +10,34 @@ def simular_publicacion_ficticia():
 
 def obtener_nombre_y_precio(link):
     response = requests.get(link)
+
     if response.status_code != 200:
+        print(f"No se pudo acceder al link {link}")
         return None, None
 
     soup = BeautifulSoup(response.text, "html.parser")
-    nombre_element = soup.find(class_="ui-pdp-title")
-    precio_element = soup.find("span", class_="andes-money-amount__fraction")
 
-    if not nombre_element or not precio_element:
+    class_id_nombre = "ui-pdp-title"
+    nombre_element = soup.find(class_=class_id_nombre)
+
+    precio_container = soup.find("div", class_="ui-pdp-price__second-line")
+    if precio_container:
+        class_id_precio = "andes-money-amount__fraction"
+        precio_element = precio_container.find("span", class_=class_id_precio)
+    else:
+        precio_element = None
+
+    if precio_element:
+        precio_actual = precio_element.get_text().strip()
+        nombre_publicacion = (
+            nombre_element.get_text().strip()
+            if nombre_element
+            else f"Nombre de publicacion no encontrado {link}"
+        )
+        return nombre_publicacion, precio_actual
+    else:
+        print(f"Precio de publicacion no encontrado {nombre_publicacion}")
         return None, None
-
-    precio_text = precio_element.get_text().strip().replace(".", "")
-    return nombre_element.get_text().strip(), float(precio_text)
 
 
 def generar_html(resultados):
@@ -47,12 +63,14 @@ def generar_html(resultados):
     for nombre_publicacion, precio_nuevo, precio_anterior, enlace in resultados:
         nombre_publicacion_link = f'<a href="{enlace}" target="_blank" class="nombre">{nombre_publicacion}</a>'
         precio_nuevo_formateado = (
-            "{:,.0f}".format(precio_nuevo).replace(",", ".") if precio_nuevo else None
+            "{:,.0f}".format(precio_nuevo).replace(",", ".")
+            if precio_nuevo
+            else "No disponible"
         )
         precio_anterior_formateado = (
             "{:,.0f}".format(precio_anterior).replace(",", ".")
             if precio_anterior
-            else None
+            else "No disponible"
         )
         if precio_anterior:
             html_content += f"""
