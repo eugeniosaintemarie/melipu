@@ -20,7 +20,8 @@ def obtener_nombre_y_precio(link):
     if not nombre_element or not precio_element:
         return None, None
 
-    return nombre_element.get_text().strip(), float(precio_element.get_text().strip())
+    precio_text = precio_element.get_text().strip().replace(".", "")
+    return nombre_element.get_text().strip(), float(precio_text)
 
 
 def generar_html(resultados):
