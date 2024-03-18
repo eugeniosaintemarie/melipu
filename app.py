@@ -12,6 +12,15 @@ color_amarillo = "\033[93m"
 color_verde = "\033[92m"
 
 
+def simular_publicacion_ficticia():
+    nombre_publicacion = "Producto Ficticio"
+
+    precio_actual = 100000
+    precio_anterior = 200000
+
+    return nombre_publicacion, precio_actual, precio_anterior
+
+
 def obtener_nombre_y_precio(link):
     response = requests.get(link)
 
@@ -110,11 +119,21 @@ def generar_html(resultados, enlaces):
 
 
 def main():
+    mostrar_publicacion_ficticia = True
+
+    if mostrar_publicacion_ficticia:
+        publicacion_ficticia = simular_publicacion_ficticia()
+    else:
+        publicacion_ficticia = None
+
     with open("links.txt", "r") as file:
         enlaces = [line.strip() for line in file]
 
     precios_guardados = {}
     resultados = []
+
+    if publicacion_ficticia:
+        resultados.append(publicacion_ficticia)
 
     for enlace in enlaces:
         resultado_obtencion = obtener_nombre_y_precio(enlace)
