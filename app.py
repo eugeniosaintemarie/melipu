@@ -64,12 +64,12 @@ def generar_html(resultados):
         nombre_publicacion_link = f'<a href="{enlace}" target="_blank" class="nombre">{nombre_publicacion}</a>'
         precio_nuevo_formateado = (
             "{:,.0f}".format(float(precio_nuevo.replace(",", "."))).replace(",", ".")
-            if precio_nuevo
+            if isinstance(precio_nuevo, str)
             else "No disponible"
         )
         precio_anterior_formateado = (
             "{:,.0f}".format(float(precio_anterior.replace(",", "."))).replace(",", ".")
-            if precio_anterior
+            if isinstance(precio_anterior, str)
             else "No disponible"
         )
         if precio_anterior:
