@@ -5,7 +5,7 @@ import pytz
 
 
 def simular_publicacion_ficticia():
-    return "Producto Ficticio", 100000, 200000
+    return "Prueba", 100000, 200000
 
 
 def obtener_nombre_y_precio(link):
@@ -33,13 +33,12 @@ def generar_html(resultados):
         <link rel="icon" type="image/svg+xml" href="https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/5.21.22/mercadolibre/favicon.svg">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <style>
-            body { font-family: 'Roboto', Arial, sans-serif; }
+            body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
             .item { margin-bottom: 20px; }
-            .nombre { font-weight: bold; color: black; text-decoration: none; }
-            .precio { color: green; }
+            .nombre { font-weight: bold; color: white; text-decoration: none; }
+            .precio_actual { color: yellow; }
             .precio_anterior { color: red; }
-            .actualizacion { font-size: 0.75em;}
-            .actualizacion-small { font-size: 0.75em;}
+            .actualizacion { font-size: 0.75em; color: #9E9E9E; }
         </style>
     </head>
     <body>
@@ -47,19 +46,23 @@ def generar_html(resultados):
 
     for nombre_publicacion, precio_nuevo, precio_anterior, enlace in resultados:
         nombre_publicacion_link = f'<a href="{enlace}" target="_blank" class="nombre">{nombre_publicacion}</a>'
+        precio_nuevo_formateado = f"${precio_nuevo:,.0f}" if precio_nuevo else None
+        precio_anterior_formateado = (
+            f"${precio_anterior:,.0f}" if precio_anterior else None
+        )
         if precio_anterior:
             html_content += f"""
             <div class="item">
                 <div>{nombre_publicacion_link}</div>
-                <div class="precio">Precio actual: ${precio_nuevo}</div>
-                <div class="precio_anterior">Precio anterior: ${precio_anterior}</div>
+                <div class="precio_actual">Precio actual: {precio_nuevo_formateado}</div>
+                <div class="precio_anterior">Precio anterior: {precio_anterior_formateado}</div>
             </div>
             """
         else:
             html_content += f"""
             <div class="item">
                 <div>{nombre_publicacion_link}</div>
-                <div class="precio">Precio actual: ${precio_nuevo}</div>
+                <div class="precio_actual">Precio actual: {precio_nuevo_formateado}</div>
             </div>
             """
 
@@ -67,7 +70,7 @@ def generar_html(resultados):
         pytz.timezone("America/Argentina/Buenos_Aires")
     ).strftime("%Y/%m/%d %H:%M")
     html_content += f"""
-    <div class="actualizacion-small">
+    <div class="actualizacion">
         <br/><br/><br/>{actualizacion}
     </div>
     </body>
