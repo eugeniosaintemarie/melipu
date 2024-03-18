@@ -63,6 +63,8 @@ def generar_html(resultados):
             .nombre { font-weight: bold; }
             .precio { color: green; }
             .precio_anterior { color: red; }
+            .actualizacion { font-size: 0.8em; text-align: center; }
+            .actualizacion-small { font-size: 0.6em; text-align: center; }
         </style>
     </head>
     <body>
@@ -86,9 +88,11 @@ def generar_html(resultados):
             </div>
             """
 
-    actualizacion = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    actualizacion = datetime.datetime.now(pytz.timezone('America/Argentina/Buenos_Aires')).strftime("%Y-%m-%d %H:%M:%S")
     html_content += f"""
-    <div class="actualizacion">Última actualización: {actualizacion}</div>
+    <div class="actualizacion-small">
+        <br/><br/><br/>Última actualización:{actualizacion}
+    </div>
     </body>
     </html>
     """
