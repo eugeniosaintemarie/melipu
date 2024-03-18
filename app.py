@@ -50,7 +50,7 @@ def obtener_nombre_y_precio(link):
         return None
 
 
-def generar_html(resultados):
+def generar_html(resultados, enlaces):
     html_content = """
     <!DOCTYPE html>
     <html>
@@ -73,7 +73,11 @@ def generar_html(resultados):
 
     for index, resultado in enumerate(resultados, start=1):
         nombre_publicacion, precio_nuevo, precio_anterior = resultado
-        nombre_publicacion = (nombre_publicacion[:50] + '...') if len(nombre_publicacion) > 50 else nombre_publicacion
+        nombre_publicacion = (
+            (nombre_publicacion[:50] + "...")
+            if len(nombre_publicacion) > 50
+            else nombre_publicacion
+        )
         nombre_publicacion_link = f'<a href="{enlaces[index-1]}" target="_blank" class="nombre">{nombre_publicacion}</a>'
         if precio_anterior:
             html_content += f"""
@@ -91,7 +95,9 @@ def generar_html(resultados):
             </div>
             """
 
-    actualizacion = datetime.datetime.now(pytz.timezone('America/Argentina/Buenos_Aires')).strftime("%Y/%m/%d %H:%M")
+    actualizacion = datetime.datetime.now(
+        pytz.timezone("America/Argentina/Buenos_Aires")
+    ).strftime("%Y/%m/%d %H:%M")
     html_content += f"""
     <div class="actualizacion-small">
         <br/><br/><br/>{actualizacion}
@@ -134,7 +140,7 @@ def main():
                     )
                 )
 
-    html_content = generar_html(resultados)
+    html_content = generar_html(resultados, enlaces)
     with open("index.html", "w", encoding="utf-8") as html_file:
         html_file.write(html_content)
 
