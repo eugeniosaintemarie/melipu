@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import datetime
 
 color_reset = "\033[0m"
 color_rojo = "\033[91m"
@@ -85,7 +86,9 @@ def generar_html(resultados):
             </div>
             """
 
-    html_content += """
+    actualizacion = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    html_content += f"""
+    <div class="actualizacion">Última actualización: {actualizacion}</div>
     </body>
     </html>
     """
