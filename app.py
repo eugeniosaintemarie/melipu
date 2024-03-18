@@ -133,7 +133,11 @@ def main():
     resultados = []
 
     if publicacion_ficticia:
-        resultados.append(publicacion_ficticia)
+        nombre_publicacion, precio_actual, precio_anterior = publicacion_ficticia
+        enlace_ficticio = "https://google.com"
+        resultados.append(
+            (nombre_publicacion, precio_actual, precio_anterior, enlace_ficticio)
+        )
 
     for enlace in enlaces:
         resultado_obtencion = obtener_nombre_y_precio(enlace)
@@ -145,7 +149,7 @@ def main():
                     "precio_actual": precio_nuevo,
                     "precio_anterior": None,
                 }
-                resultados.append((nombre_publicacion, precio_nuevo, None))
+                resultados.append((nombre_publicacion, precio_nuevo, None, enlace))
             elif precio_nuevo != precios_guardados[enlace]["precio_actual"]:
                 precios_guardados[enlace]["precio_anterior"] = precios_guardados[
                     enlace
@@ -156,6 +160,7 @@ def main():
                         nombre_publicacion,
                         precio_nuevo,
                         precios_guardados[enlace]["precio_anterior"],
+                        enlace,
                     )
                 )
 
