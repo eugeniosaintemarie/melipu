@@ -65,11 +65,13 @@ def generar_html(resultados):
         precio_nuevo_formateado = (
             "{:,.0f}".format(float(precio_nuevo.replace(",", "."))).replace(",", ".")
             if isinstance(precio_nuevo, str)
+            and precio_nuevo.replace(",", ".").replace(".", "", 1).isdigit()
             else "No disponible"
         )
         precio_anterior_formateado = (
             "{:,.0f}".format(float(precio_anterior.replace(",", "."))).replace(",", ".")
             if isinstance(precio_anterior, str)
+            and precio_anterior.replace(",", ".").replace(".", "", 1).isdigit()
             else "No disponible"
         )
         if precio_anterior:
