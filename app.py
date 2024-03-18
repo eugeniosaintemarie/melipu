@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import datetime
+import pytz
 
 color_reset = "\033[0m"
 color_rojo = "\033[91m"
