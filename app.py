@@ -48,7 +48,6 @@ def generar_html(resultados):
         nombre_publicacion_link = f'<a href="{enlace}" target="_blank" class="nombre">{nombre_publicacion}</a>'
         precio_nuevo_formateado = "{:,.0f}".format(precio_nuevo).replace(',', '.') if precio_nuevo else None
         precio_anterior_formateado = "{:,.0f}".format(precio_anterior).replace(',', '.') if precio_anterior else None
-        )
         if precio_anterior:
             html_content += f"""
             <div class="item">
