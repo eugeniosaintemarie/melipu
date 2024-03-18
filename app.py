@@ -61,7 +61,7 @@ def generar_html(resultados):
         <style>
             body { font-family: 'Roboto', Arial, sans-serif; }
             .item { margin-bottom: 20px; }
-            .nombre { font-weight: bold; }
+            .nombre { font-weight: bold; color: black; text-decoration: none; }
             .precio { color: green; }
             .precio_anterior { color: red; }
             .actualizacion { font-size: 0.75em;}
@@ -73,10 +73,12 @@ def generar_html(resultados):
 
     for index, resultado in enumerate(resultados, start=1):
         nombre_publicacion, precio_nuevo, precio_anterior = resultado
+        nombre_publicacion = (nombre_publicacion[:50] + '...') if len(nombre_publicacion) > 50 else nombre_publicacion
+        nombre_publicacion_link = f'<a href="{enlaces[index-1]}" target="_blank" class="nombre">{nombre_publicacion}</a>'
         if precio_anterior:
             html_content += f"""
             <div class="item">
-                <div class="nombre">{nombre_publicacion}</div>
+                <div class="nombre">{nombre_publicacion_link}</div>
                 <div class="precio">Precio actual: ${precio_nuevo}</div>
                 <div class="precio_anterior">Precio anterior: ${precio_anterior}</div>
             </div>
@@ -84,7 +86,7 @@ def generar_html(resultados):
         else:
             html_content += f"""
             <div class="item">
-                <div class="nombre">{nombre_publicacion}</div>
+                <div class="nombre">{nombre_publicacion_link}</div>
                 <div class="precio">Precio actual: ${precio_nuevo}</div>
             </div>
             """
