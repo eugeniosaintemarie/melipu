@@ -5,7 +5,7 @@ import pytz
 
 
 def simular_publicacion_ficticia():
-    return "Prueba", None, None
+    return None, None, None
 
 
 def obtener_nombre_y_precio(link):
@@ -53,6 +53,7 @@ def generar_html(resultados):
             body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
             .item { margin-bottom: 20px; }
             .nombre { font-weight: bold; color: white; text-decoration: none; }
+            .mark { color: white; }
             .precio_actual { color: yellow; }
             .precio_anterior { color: orange; }
             .precio_no_disponible { color: red; }
@@ -90,8 +91,8 @@ def generar_html(resultados):
             html_content += f"""
             <div class="item">
                 <div>{nombre_publicacion_link}</div>
-                <div class="precio_actual">> {precio_nuevo_formateado}</div>
-                <div class="precio_anterior">< {precio_anterior_formateado}</div>
+                <div class="precio_actual"><span class="mark">></span> {precio_nuevo_formateado}</div>
+                <div class="precio_anterior"><span class="mark"><</span> {precio_anterior_formateado}</div>
             </div>
             """
         else:
