@@ -29,6 +29,7 @@ def obtener_nombre_y_precio(link):
 
     if precio_element:
         precio_actual = precio_element.get_text().strip()
+        precio_actual = precio_actual.replace(".", "").replace(",", ".")
         nombre_publicacion = (
             nombre_element.get_text().strip()
             if nombre_element
@@ -36,7 +37,7 @@ def obtener_nombre_y_precio(link):
         )
         return nombre_publicacion, precio_actual
     else:
-        print(f"Precio de publicacion no encontrado {nombre_publicacion}")
+        print(f"Precio de publicacion no encontrado {link}")
         return None, None
 
 
@@ -63,15 +64,15 @@ def generar_html(resultados):
     for nombre_publicacion, precio_nuevo, precio_anterior, enlace in resultados:
         nombre_publicacion_link = f'<a href="{enlace}" target="_blank" class="nombre">{nombre_publicacion}</a>'
         precio_nuevo_formateado = (
-            "{:,.0f}".format(float(precio_nuevo.replace(",", "."))).replace(",", ".")
+            "{:,.0f}".format(float(precio_nuevo)).replace(",", ".")
             if isinstance(precio_nuevo, str)
-            and precio_nuevo.replace(",", ".").replace(".", "", 1).isdigit()
+            and precio_nuevo.replace(".", "", 1).isdigit()
             else "No disponible"
         )
         precio_anterior_formateado = (
-            "{:,.0f}".format(float(precio_anterior.replace(",", "."))).replace(",", ".")
+            "{:,.0f}".format(float(precio_anterior)).replace(",", ".")
             if isinstance(precio_anterior, str)
-            and precio_anterior.replace(",", ".").replace(".", "", 1).isdigit()
+            and precio_anterior.replace(".", "", 1).isdigit()
             else "No disponible"
         )
         if precio_anterior:
