@@ -75,6 +75,16 @@ def generar_html(resultados):
             and precio_anterior.replace(".", "", 1).isdigit()
             else "No disponible"
         )
+        precio_nuevo_formateado = (
+            f'<span class="precio_no_disponible">{precio_nuevo_formateado}</span>'
+            if precio_nuevo_formateado == "No disponible"
+            else precio_nuevo_formateado
+        )
+        precio_anterior_formateado = (
+            f'<span class="precio_no_disponible">{precio_anterior_formateado}</span>'
+            if precio_anterior_formateado == "No disponible"
+            else precio_anterior_formateado
+        )
         if precio_anterior:
             html_content += f"""
             <div class="item">
