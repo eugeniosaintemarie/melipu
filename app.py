@@ -55,6 +55,7 @@ def generar_html(resultados):
             .nombre { font-weight: bold; color: white; text-decoration: none; }
             .precio_actual { color: yellow; }
             .precio_anterior { color: orange; }
+            .precio_no_disponible { color: red; }
             .actualizacion { font-size: 0.75em; color: #9E9E9E; }
         </style>
     </head>
