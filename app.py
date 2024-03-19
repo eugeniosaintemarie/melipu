@@ -5,15 +5,14 @@ import pytz
 
 
 def simular_publicacion_ficticia():
-    return None, None, None
+    return "Prueba", 100000, 200000
 
 
 def obtener_nombre_y_precio(link):
     response = requests.get(link)
 
-    if response.status_code != 200:
-        print(f"No se pudo acceder al link {link}")
-        return None, None
+    # if response.status_code != 200:
+    #    return None, None
 
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -31,13 +30,10 @@ def obtener_nombre_y_precio(link):
         precio_actual = precio_element.get_text().strip()
         precio_actual = precio_actual.replace(".", "").replace(",", ".")
         nombre_publicacion = (
-            nombre_element.get_text().strip()
-            if nombre_element
-            else f"Nombre de publicacion no encontrado {link}"
+            nombre_element.get_text().strip() if nombre_element else None
         )
         return nombre_publicacion, precio_actual
     else:
-        print(f"Precio de publicacion no encontrado {link}")
         return None, None
 
 
