@@ -64,7 +64,11 @@ def generar_html(resultados):
     """
 
     for nombre_publicacion, precio_nuevo, precio_anterior, enlace in resultados:
-        nombre_publicacion_link = f'<a href="{enlace}" target="_blank" class="nombre">{nombre_publicacion}</a>'
+        nombre_publicacion_link = (
+            f'<a href="{enlace}" target="_blank" class="nombre">{nombre_publicacion if nombre_publicacion else "No disponible"}</a>'
+            if nombre_publicacion
+            else f'<a href="{enlace}" target="_blank" class="nombre"><span class="precio_no_disponible">No disponible</span></a>'
+        )
         precio_nuevo_formateado = (
             "{:,.0f}".format(float(precio_nuevo)).replace(",", ".")
             if isinstance(precio_nuevo, str)
@@ -99,7 +103,7 @@ def generar_html(resultados):
             html_content += f"""
             <div class="item">
                 <div>{nombre_publicacion_link}</div>
-                <div class="precio_actual">> {precio_nuevo_formateado}</div>
+                <div class="precio_actual"><span class="mark">></span> {precio_nuevo_formateado}</div>
             </div>
             """
 
