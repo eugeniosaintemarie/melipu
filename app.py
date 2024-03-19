@@ -5,7 +5,7 @@ import pytz
 
 
 def simular_publicacion_ficticia():
-    return "Prueba", 100000, 200000
+    return "Prueba", None, None
 
 
 def obtener_nombre_y_precio(link):
@@ -54,7 +54,7 @@ def generar_html(resultados):
             .item { margin-bottom: 20px; }
             .nombre { font-weight: bold; color: white; text-decoration: none; }
             .precio_actual { color: yellow; }
-            .precio_anterior { color: red; }
+            .precio_anterior { color: orange; }
             .actualizacion { font-size: 0.75em; color: #9E9E9E; }
         </style>
     </head>
