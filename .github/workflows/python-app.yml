@@ -2,7 +2,8 @@ name: Shop publications
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    #- cron: '0 * * * *'
+    - cron: '*/15 * * * *'
   push:
     branches: [ "gh-pages" ]
   pull_request:
