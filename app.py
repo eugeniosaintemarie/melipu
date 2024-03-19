@@ -120,8 +120,17 @@ def main():
     if publicacion_ficticia:
         nombre_publicacion, precio_actual, precio_anterior = publicacion_ficticia
         enlace_ficticio = "https://google.com"
+        precio_actual_str = str(precio_actual)
+        precio_anterior_str = (
+            str(precio_anterior) if precio_anterior is not None else None
+        )
         resultados.append(
-            (nombre_publicacion, precio_actual, precio_anterior, enlace_ficticio)
+            (
+                nombre_publicacion,
+                precio_actual_str,
+                precio_anterior_str,
+                enlace_ficticio,
+            )
         )
 
     for enlace in enlaces:
