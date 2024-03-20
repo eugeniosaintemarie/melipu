@@ -132,11 +132,12 @@ def main():
         simular_publicacion_ficticia() if mostrar_publicacion_ficticia else None
     )
 
-    with open("links.txt", "r") as file:
-        enlaces = [line.strip() for line in file]
-
+    enlaces = []
     precios_guardados = {}
     resultados = []
+
+    with open("links.txt", "r") as file:
+        enlaces = [line.strip() for line in file]
 
     if publicacion_ficticia:
         nombre_publicacion, precio_actual, precio_anterior = publicacion_ficticia
