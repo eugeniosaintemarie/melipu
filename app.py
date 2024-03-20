@@ -146,14 +146,15 @@ def main():
         precio_anterior_str = (
             str(precio_anterior) if precio_anterior is not None else None
         )
-        resultados.append(
-            (
-                nombre_publicacion,
-                precio_actual_str,
-                precio_anterior_str,
-                enlace_ficticio,
-            )
+    resultados.append(
+        (
+            nombre_publicacion,
+            precio_actual_str,
+            precio_anterior_str,
+            enlace_ficticio,
+            None,
         )
+    )
 
     for enlace in enlaces:
         nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(enlace)
