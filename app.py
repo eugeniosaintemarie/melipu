@@ -10,10 +10,6 @@ def simular_publicacion_ficticia():
 
 def obtener_nombre_y_precio(link):
     response = requests.get(link)
-
-    # if response.status_code != 200:
-    #    return None, None
-
     soup = BeautifulSoup(response.text, "html.parser")
 
     class_id_nombre = "ui-pdp-title"
@@ -26,15 +22,18 @@ def obtener_nombre_y_precio(link):
     else:
         precio_element = None
 
+    descuento_element = soup.find("span", class_="andes-money-amount__discount")
+    descuento = descuento_element.get_text().strip() if descuento_element else None
+
     if precio_element:
         precio_actual = precio_element.get_text().strip()
         precio_actual = precio_actual.replace(".", "").replace(",", ".")
         nombre_publicacion = (
             nombre_element.get_text().strip() if nombre_element else None
         )
-        return nombre_publicacion, precio_actual
+        return nombre_publicacion, precio_actual, descuento
     else:
-        return None, None
+        return None, None, None
 
 
 def generar_html(resultados):
@@ -53,13 +52,20 @@ def generar_html(resultados):
             .precio_actual { color: yellow; }
             .precio_anterior { color: orange; }
             .precio_no_disponible { color: red; }
+            .descuento { color: green; }
             .actualizacion { font-size: 0.75em; color: #9E9E9E; }
         </style>
     </head>
     <body>
     """
 
-    for nombre_publicacion, precio_nuevo, precio_anterior, enlace in resultados:
+    for (
+        nombre_publicacion,
+        precio_nuevo,
+        precio_anterior,
+        enlace,
+        descuento,
+    ) in resultados:
         nombre_publicacion_link = (
             f'<a href="{enlace}" target="_blank" class="nombre">{nombre_publicacion if nombre_publicacion else "No disponible"}</a>'
             if nombre_publicacion
@@ -87,11 +93,14 @@ def generar_html(resultados):
             if precio_anterior_formateado == "No disponible"
             else precio_anterior_formateado
         )
+        descuento_formateado = (
+            f'<span class="descuento">{descuento}</span>' if descuento else ""
+        )
         if precio_anterior:
             html_content += f"""
             <div class="item">
                 <div>{nombre_publicacion_link}</div>
-                <div class="precio_actual"><span class="mark">></span> {precio_nuevo_formateado}</div>
+                <div class="precio_actual"><span class="mark">></span> {precio_nuevo_formateado} {descuento_formateado}</div>
                 <div class="precio_anterior"><span class="mark"><</span> {precio_anterior_formateado}</div>
             </div>
             """
@@ -99,7 +108,7 @@ def generar_html(resultados):
             html_content += f"""
             <div class="item">
                 <div>{nombre_publicacion_link}</div>
-                <div class="precio_actual"><span class="mark">></span> {precio_nuevo_formateado}</div>
+                <div class="precio_actual"><span class="mark">></span> {precio_nuevo_formateado} {descuento_formateado}</div>
             </div>
             """
 
@@ -145,29 +154,35 @@ def main():
             )
         )
 
-    for enlace in enlaces:
-        nombre_publicacion, precio_nuevo = obtener_nombre_y_precio(enlace)
-        if nombre_publicacion and precio_nuevo:
-            nombre_publicacion = nombre_publicacion[:32] + "..."
-            if enlace not in precios_guardados:
-                precios_guardados[enlace] = {
-                    "precio_actual": precio_nuevo,
-                    "precio_anterior": None,
-                }
-                resultados.append((nombre_publicacion, precio_nuevo, None, enlace))
-            elif precio_nuevo != precios_guardados[enlace]["precio_actual"]:
-                precios_guardados[enlace]["precio_anterior"] = precios_guardados[
-                    enlace
-                ]["precio_actual"]
-                precios_guardados[enlace]["precio_actual"] = precio_nuevo
-                resultados.append(
-                    (
-                        nombre_publicacion,
-                        precio_nuevo,
-                        precios_guardados[enlace]["precio_anterior"],
-                        enlace,
-                    )
+
+for enlace in enlaces:
+    nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(enlace)
+    if nombre_publicacion and precio_nuevo:
+        nombre_publicacion = nombre_publicacion[:32] + "..."
+        if enlace not in precios_guardados:
+            precios_guardados[enlace] = {
+                "precio_actual": precio_nuevo,
+                "precio_anterior": None,
+                "descuento": descuento,
+            }
+            resultados.append(
+                (nombre_publicacion, precio_nuevo, None, enlace, descuento)
+            )
+        elif precio_nuevo != precios_guardados[enlace]["precio_actual"]:
+            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
+                "precio_actual"
+            ]
+            precios_guardados[enlace]["precio_actual"] = precio_nuevo
+            precios_guardados[enlace]["descuento"] = descuento
+            resultados.append(
+                (
+                    nombre_publicacion,
+                    precio_nuevo,
+                    precios_guardados[enlace]["precio_anterior"],
+                    enlace,
+                    descuento,
                 )
+            )
 
     html_content = generar_html(resultados)
     with open("index.html", "w", encoding="utf-8") as html_file:
