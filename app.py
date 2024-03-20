@@ -49,13 +49,13 @@ def generar_html(resultados):
         <style>
             body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
             .item { margin-bottom: 20px; }
-            .nombre { font-weight: bold; color: white; text-decoration: none; }
+            .nombre { color: white; font-weight: bold; text-decoration: none; }
             .mark { color: white; }
             .precio_actual { color: yellow; }
             .precio_anterior { color: orange; }
             .precio_no_disponible { color: red; }
-            .descuento { color: green; }
-            .actualizacion { font-size: 0.75em; color: #9E9E9E; }
+            .descuento { color: green; font-size: 0.80em; }
+            .actualizacion { color: #9E9E9E; font-size: 0.75em; }
         </style>
     </head>
     <body>
