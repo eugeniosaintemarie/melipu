@@ -65,4 +65,8 @@ if (isIOS() && isSafari()) {
         }
     }
 }
+
+Notification.requestPermission().then(function(result) {
+    console.log(result);
+});
 //PWA functionality finish
