@@ -43,9 +43,22 @@ def generar_html(resultados):
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Publicaciones-Precios</title>
+        <title>Shop publications</title>
         <link rel="icon" type="image/svg+xml" href="https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/5.21.22/mercadolibre/favicon.svg">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <!--PWA functionality start-->
+        <link rel="manifest" href="https://eugeniosaintemarie.github.io/shop-publications/manifest.json" />
+        <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-72x72.png" />
+        <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-96x96.png" />
+        <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-128x128.png" />
+        <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-144x144.png" />
+        <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-152x152.png" />
+        <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-384x384.png" />
+        <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-512x512.png" />
+        <meta name="apple-mobile-web-app-status-bar" content="#ffe600" />
+        <meta name="theme-color" content="#2d3277" />
+        <!--PWA functionality finish-->
         <style>
             body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
             .item { margin-bottom: 20px; }
@@ -123,6 +136,12 @@ def generar_html(resultados):
     </div>
     </body>
     </html>
+    """
+
+    html_content += """
+        <script src="https://eugeniosaintemarie.github.io/shop-publications/app.js"></script>
+        </body>
+        </html>
     """
 
     return html_content
