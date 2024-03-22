@@ -26,13 +26,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 requests beautifulsoup4 datetime pytz
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: app
+      - name: Compile dependencies
         run: |
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Shop publications
         run: |
-          python app.py
+          python Start app
       - name: Commit and push index.html
         run: |
           git config --global user.name 'eugeniosaintemarie'
@@ -50,7 +50,7 @@ jobs:
           node-version: "14"
       - name: Install Node.js dependencies
         run: npm install web-push
-      - name: Send push notification
+      - name: Compile push notification
         env:
           PUBLIC_KEY: ${{ secrets.SHOP_PUBLICATIONS_NOTI_PUBLIC_KEY }}
           PRIVATE_KEY: ${{ secrets.SHOP_PUBLICATIONS_NOTI_PRIVATE_KEY }}
