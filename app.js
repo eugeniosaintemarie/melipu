@@ -72,7 +72,7 @@ Notification.requestPermission().then(function (result) {
 navigator.serviceWorker.ready.then(function (registration) {
     registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array('SHOP_PUBLICATIONS_NOTI_PUBLIC_KEY')
+        applicationServerKey: urlBase64ToUint8Array('process.env.PUBLIC_KEY')
     }).then(function (subscription) {
         console.log('User is subscribed:', subscription);
     }).catch(function (error) {
