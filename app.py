@@ -71,6 +71,7 @@ def generar_html(resultados):
         </style>
     </head>
     <body>
+    <br/>
     """
 
     for (

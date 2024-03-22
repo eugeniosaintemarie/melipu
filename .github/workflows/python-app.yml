@@ -32,7 +32,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Shop publications
         run: |
-          python Start app
+          python app.py
       - name: Commit and push index.html
         run: |
           git config --global user.name 'eugeniosaintemarie'
