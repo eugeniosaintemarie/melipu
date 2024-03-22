@@ -1,12 +1,12 @@
 name: Send Push Notification
 
 on:
- push:
+  push:
     branches:
       - main
 
 jobs:
- send-notification:
+  send-notification:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: "14"
 
       - name: Install dependencies
         run: npm install web-push
@@ -36,7 +36,7 @@ jobs:
           };
 
           webpush.setVapidDetails(
-              'mailto:your-email@example.com',
+              'mailto:e.saintemarie@outlook.com',
               vapidKeys.publicKey,
               vapidKeys.privateKey
           );
@@ -52,8 +52,8 @@ jobs:
           const payload = JSON.stringify({
               title: 'Nuevo precio',
               body: 'El precio de un producto ha cambiado.',
-              icon: 'path/to/icon.png',
-              badge: 'path/to/badge.png'
+              icon: 'https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-72x72.png',
+              badge: 'https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-72x72.png'
           });
 
           webpush.sendNotification(pushSubscription, payload).catch(error => {
