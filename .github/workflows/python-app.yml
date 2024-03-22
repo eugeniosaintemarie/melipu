@@ -58,4 +58,4 @@ jobs:
           P256DH_KEY: ${{ secrets.P256DH_KEY }}
           AUTH_KEY: ${{ secrets.AUTH_KEY }}
         run: |
-          node app.js
+          node sendNotification.js
