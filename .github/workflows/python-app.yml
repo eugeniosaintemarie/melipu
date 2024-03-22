@@ -52,7 +52,7 @@ jobs:
         run: npm install web-push
       - name: Send push notification
         env:
-          PUBLIC_KEY: ${{ secrets.SHOP_PUBLICATIONS_NOTI_PUBLIC_KEYA }}
+          PUBLIC_KEY: ${{ secrets.SHOP_PUBLICATIONS_NOTI_PUBLIC_KEY }}
           PRIVATE_KEY: ${{ secrets.SHOP_PUBLICATIONS_NOTI_PRIVATE_KEY }}
           SUBSCRIPTION_ENDPOINT: ${{ secrets.SUBSCRIPTION_ENDPOINT }}
           P256DH_KEY: ${{ secrets.P256DH_KEY }}
