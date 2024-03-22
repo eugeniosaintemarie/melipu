@@ -161,6 +161,23 @@ def main():
     with open("links.txt", "r") as file:
         enlaces = [line.strip() for line in file]
 
+    if publicacion_ficticia:
+        nombre_publicacion, precio_actual, precio_anterior = publicacion_ficticia
+        enlace_ficticio = "https://google.com"
+        precio_actual_str = str(precio_actual)
+        precio_anterior_str = (
+            str(precio_anterior) if precio_anterior is not None else None
+        )
+    resultados.append(
+        (
+            nombre_publicacion,
+            precio_actual_str,
+            precio_anterior_str,
+            enlace_ficticio,
+            None,
+        )
+    )
+
     for enlace in enlaces:
         nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(enlace)
         if nombre_publicacion and precio_nuevo:
@@ -193,23 +210,6 @@ def main():
         html_content = generar_html(resultados)
         with open("index.html", "w", encoding="utf-8") as html_file:
             html_file.write(html_content)
-
-    if publicacion_ficticia:
-        nombre_publicacion, precio_actual, precio_anterior = publicacion_ficticia
-        enlace_ficticio = "https://google.com"
-        precio_actual_str = str(precio_actual)
-        precio_anterior_str = (
-            str(precio_anterior) if precio_anterior is not None else None
-        )
-    resultados.append(
-        (
-            nombre_publicacion,
-            precio_actual_str,
-            precio_anterior_str,
-            enlace_ficticio,
-            None,
-        )
-    )
 
 
 if __name__ == "__main__":
