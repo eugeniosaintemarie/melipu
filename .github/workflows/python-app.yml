@@ -1,8 +1,8 @@
-name: Shop publications
+name: Shop publications and Notifications
 
 on:
-  schedule:
-    - cron: "0 * * * *"
+ schedule:
+    - cron: '*/15 * * * *'
   push:
     branches: ["gh-pages"]
   pull_request:
@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 requests beautifulsoup4 datetime pytz web-push
+          pip install flake8 requests beautifulsoup4 datetime pytz
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: app
         run: |
@@ -33,10 +33,6 @@ jobs:
       - name: Shop publications
         run: |
           python app.py
-      - name: Send push notification (Test)
-        run: |
-          # Asegúrate de que tu script de Python esté configurado para enviar notificaciones push
-          python send_push_notification.py
       - name: Commit and push index.html
         run: |
           git config --global user.name 'eugeniosaintemarie'
@@ -48,3 +44,48 @@ jobs:
             git commit -m "Update index.html"
             git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git gh-pages
           fi
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - name: Install Node.js dependencies
+        run: npm install web-push
+      - name: Send push notification
+        env:
+          PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          SUBSCRIPTION_ENDPOINT: ${{ secrets.SUBSCRIPTION_ENDPOINT }}
+          P256DH_KEY: ${{ secrets.P256DH_KEY }}
+          AUTH_KEY: ${{ secrets.AUTH_KEY }}
+        run: |
+          const webpush = require('web-push');
+
+          const vapidKeys = {
+              publicKey: process.env.PUBLIC_KEY,
+              privateKey: process.env.PRIVATE_KEY
+          };
+
+          webpush.setVapidDetails(
+              'mailto:e.saintemarie@outlook.com',
+              vapidKeys.publicKey,
+              vapidKeys.privateKey
+          );
+
+          const pushSubscription = {
+              endpoint: process.env.SUBSCRIPTION_ENDPOINT,
+              keys: {
+                 p256dh: process.env.P256DH_KEY,
+                 auth: process.env.AUTH_KEY
+              }
+          };
+
+          const payload = JSON.stringify({
+              title: 'Nuevo precio',
+              body: 'El precio de un producto ha cambiado.',
+              icon: 'https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-72x72.png',
+              badge: 'https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-72x72.png'
+          });
+
+          webpush.sendNotification(pushSubscription, payload).catch(error => {
+              console.error(error.stack);
+          });
