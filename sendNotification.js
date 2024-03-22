@@ -1,8 +1,8 @@
 const webpush = require('web-push');
 
 const vapidKeys = {
-    publicKey: process.env.PUBLIC_KEY,
-    privateKey: process.env.PRIVATE_KEY
+    publicKey: process.env.SHOP_PUBLICATIONS_NOTI_PUBLIC_KEY,
+    privateKey: process.env.SHOP_PUBLICATIONS_NOTI_PRIVATE_KEY
 };
 
 webpush.setVapidDetails(

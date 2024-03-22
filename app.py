@@ -118,14 +118,14 @@ def generar_html(resultados):
                 <div>{nombre_publicacion_link}</div>
                 <div class="precio_actual"><span class="mark">></span> {precio_nuevo_formateado} {descuento_formateado}</div>
                 <div class="precio_anterior"><span class="mark"><</span> {precio_anterior_formateado}</div>
-            </div>
+            </div><br/>
             """
         else:
             html_content += f"""
             <div class="item">
                 <div>{nombre_publicacion_link}</div>
                 <div class="precio_actual"><span class="mark">></span> {precio_nuevo_formateado} {descuento_formateado}</div>
-            </div>
+            </div><br/>
             """
 
     actualizacion = datetime.datetime.now(
