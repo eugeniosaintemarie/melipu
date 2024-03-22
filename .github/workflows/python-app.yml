@@ -1,8 +1,8 @@
 name: Shop publications and Notifications
 
 on:
- schedule:
-    - cron: '*/15 * * * *'
+  schedule:
+    - cron: '0 * * * *'
   push:
     branches: ["gh-pages"]
   pull_request:
@@ -81,7 +81,7 @@ jobs:
 
           const payload = JSON.stringify({
               title: 'Nuevo precio',
-              body: 'El precio de un producto ha cambiado.',
+              body: 'El precio de una publicación cambio',
               icon: 'https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-72x72.png',
               badge: 'https://eugeniosaintemarie.github.io/shop-publications/image/icon/icon-72x72.png'
           });
