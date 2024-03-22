@@ -69,12 +69,10 @@ Notification.requestPermission().then(function (result) {
     console.log(result);
 });
 
-const vapidPublicKey = process.env.PUBLIC_KEY;
-
 navigator.serviceWorker.ready.then(function (registration) {
     registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+        applicationServerKey: urlBase64ToUint8Array(window.vapidPublicKey)
     }).then(function (subscription) {
         console.log('User is subscribed:', subscription);
     }).catch(function (error) {
