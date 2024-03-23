@@ -31,6 +31,16 @@ Notification.requestPermission().then(function (result) {
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(window.vapidPublicKey)
             }).then(function (subscription) {
+                registration.pushManager.getSubscription().then(function (existingSubscription) {
+                    if (existingSubscription) {
+                        existingSubscription.unsubscribe().then(function (successful) {
+                            registration.pushManager.subscribe(subscriptionOptions);
+                        });
+                    } else {
+                        registration.pushManager.subscribe(subscriptionOptions);
+                    }
+                });
+
                 console.log('User is subscribed:', subscription);
                 console.log('Subscription Endpoint:', subscription.endpoint);
                 console.log('P256DH Key:', subscription.keys.p256dh);
