@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 requests beautifulsoup4 datetime pytz
+          pip install flake8 os requests beautifulsoup4 datetime pytz
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Compile dependencies
         run: |
