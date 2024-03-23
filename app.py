@@ -40,11 +40,14 @@ def obtener_nombre_y_precio(link):
 
 
 def generar_html(resultados):
+    public_key = os.getenv('PUBLIC_KEY', 'BH6nVHnfduLF90IoVl-1-xAN_87d67IAn8QQ687b9dkXwXYX4HFdQzS-4hwNQ41y1yTxachsbHrFIqcJ7-AutOw')
+
     html_content = """
     <!DOCTYPE html>
     <html>
     <head>
         <title>Shop publications</title>
+        <script> window.vapidPublicKey = '{}'; </script>
         <script src="https://eugeniosaintemarie.github.io/shop-publications/app.js"></script>
         <link rel="icon" type="image/svg+xml" href="https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/5.21.22/mercadolibre/favicon.svg">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
