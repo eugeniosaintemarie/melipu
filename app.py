@@ -40,8 +40,6 @@ def obtener_nombre_y_precio(link):
 
 
 def generar_html(resultados):
-    public_key = os.getenv("PUBLIC_KEY", "default_public_key")
-
     html_content = """
     <!DOCTYPE html>
     <html>
