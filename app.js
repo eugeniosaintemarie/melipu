@@ -24,8 +24,6 @@ function urlBase64ToUint8Array(base64String) {
     return outputArray;
 }
 
-const publicKeyExample = 'BH6nVHnfduLF90IoVl-1-xAN_87d67IAn8QQ687b9dkXwXYX4HFdQzS-4hwNQ41y1yTxachsbHrFIqcJ7-AutOw';
-
 Notification.requestPermission().then(function (result) {
     if (result === 'granted') {
         navigator.serviceWorker.ready.then(function (registration) {
