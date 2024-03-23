@@ -23,9 +23,13 @@ firebase_admin.initialize_app(cred)
 
 def obtener_tokens():
     db = firestore.client()
-    tokens_ref = db.collection("tokens")
-    tokens = [doc.to_dict()["token"] for doc in tokens_ref.stream()]
-    return tokens
+    subcollection_ref = db.collection("tokens").document("YZ1lgw53iAFpxq8fUm8V")
+    docs = subcollection_ref.collection("YZ1lgw53iAFpxq8fUm8V").stream()
+    if not docs:
+        return []
+    else:
+        tokens = [doc.to_dict().get("token") for doc in docs]
+        return tokens
 
 
 def enviar_notificacion(titulo, cuerpo, tokens):
