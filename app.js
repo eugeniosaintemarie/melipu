@@ -69,8 +69,6 @@ Notification.requestPermission().then(function (result) {
     console.log(result);
 });
 
-const publicKey = 'BH6nVHnfduLF90IoVl-1-xAN_87d67IAn8QQ687b9dkXwXYX4HFdQzS-4hwNQ41y1yTxachsbHrFIqcJ7-AutOw';
-
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding)
@@ -89,7 +87,7 @@ Notification.requestPermission().then(function (result) {
         navigator.serviceWorker.ready.then(function (registration) {
             registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(publicKey)
+                applicationServerKey: urlBase64ToUint8Array(window.vapidPublicKey)
             }).then(function (subscription) {
                 console.log('User is subscribed:', subscription);
                 console.log('Subscription Endpoint:', subscription.endpoint);
