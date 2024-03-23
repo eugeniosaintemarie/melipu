@@ -63,15 +63,15 @@ def generar_html(resultados):
         <meta name="apple-mobile-web-app-status-bar" content="#ffe600" />
         <meta name="theme-color" content="#2d3277" />
         <style>
-            body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
-            .item { margin-bottom: 20px; }
-            .nombre { color: white; font-weight: bold; text-decoration: none; }
-            .mark { color: white; }
-            .precio_actual { color: yellow; }
-            .precio_anterior { color: orange; }
-            .precio_no_disponible { color: red; }
-            .descuento { color: green; font-size: 0.80em; }
-            .actualizacion { color: #9E9E9E; font-size: 0.75em; }
+            body {{ font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }}
+            .item {{ margin-bottom: 20px; }}
+            .nombre {{ color: white; font-weight: bold; text-decoration: none; }}
+            .mark {{ color: white; }}
+            .precio_actual {{ color: yellow; }}
+            .precio_anterior {{ color: orange; }}
+            .precio_no_disponible {{ color: red; }}
+            .descuento {{ color: green; font-size: 0.80em; }}
+            .actualizacion {{ color: #9E9E9E; font-size: 0.75em; }}
         </style>
     </head>
     <body>
