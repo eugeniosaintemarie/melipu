@@ -7,6 +7,14 @@ import datetime
 import pytz
 
 
+cred = credentials.Certificate(
+    "https://eugeniosaintemarie.github.io/shop-publications/shop-publications-9a9ae-firebase-adminsdk-42099-ece50ba356.json"
+)
+
+
+firebase_admin.initialize_app(cred)
+
+
 def obtener_tokens():
     db = firestore.client()
     tokens_ref = db.collection("tokens")
