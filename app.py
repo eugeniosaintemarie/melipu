@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import firebase_admin
-from firebase_admin import credentials, messaging
+from firebase_admin import credentials, messaging, firestore
 from pyfcm import FCMNotification
 import datetime
 import pytz
@@ -201,12 +201,16 @@ def main():
             precio_nuevo_str = str(precio_nuevo)
             precio_anterior_str = str(precio_anterior)
         else:
-            nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(enlace)
+            nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(
+                enlace
+            )
             if nombre_publicacion and precio_nuevo:
                 nombre_publicacion = nombre_publicacion[:32] + "..."
                 precio_nuevo_str = str(precio_nuevo)
                 precio_anterior_str = (
-                    str(precios_guardados[enlace]["precio_anterior"]) if enlace in precios_guardados else None
+                    str(precios_guardados[enlace]["precio_anterior"])
+                    if enlace in precios_guardados
+                    else None
                 )
             else:
                 continue
@@ -227,7 +231,9 @@ def main():
                 )
             )
         else:
-            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace]["precio_actual"]
+            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
+                "precio_actual"
+            ]
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
             precios_guardados[enlace]["descuento"] = 10
             resultados.append(
@@ -240,11 +246,18 @@ def main():
                 )
             )
 
-        if precios_guardados[enlace]["precio_anterior"] is not None and abs(float(precios_guardados[enlace]["precio_anterior"]) - float(precio_nuevo_str)) > 1:
+        if (
+            precios_guardados[enlace]["precio_anterior"] is not None
+            and abs(
+                float(precios_guardados[enlace]["precio_anterior"])
+                - float(precio_nuevo_str)
+            )
+            > 1
+        ):
             tokens = obtener_tokens()
 
-            titulo = f'Vario el precio de: {nombre_publicacion}'
-            cuerpo = f'Ahora es de: {precio_nuevo}'
+            titulo = f"Vario el precio de: {nombre_publicacion}"
+            cuerpo = f"Ahora es de: {precio_nuevo}"
 
             enviar_notificacion(titulo, cuerpo, tokens)
 
