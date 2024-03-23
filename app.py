@@ -1,4 +1,5 @@
 import os
+import json
 import requests
 from bs4 import BeautifulSoup
 import firebase_admin
@@ -8,7 +9,10 @@ import datetime
 import pytz
 
 
-firebase_admin_sdk_json = os.environ["FIREBASE_ADMIN_SDK"]
+firebase_admin_sdk_json_str = os.environ["FIREBASE_ADMIN_SDK"]
+
+
+firebase_admin_sdk_json = json.loads(firebase_admin_sdk_json_str)
 
 
 cred = credentials.Certificate(firebase_admin_sdk_json)
