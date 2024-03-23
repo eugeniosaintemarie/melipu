@@ -6,7 +6,7 @@ import pytz
 
 
 def simular_publicacion_ficticia():
-    return "Producto de prueba", 100000, 1500000
+    return "Producto de prueba", 100000, 150000
 
 
 def obtener_nombre_y_precio(link):
@@ -40,7 +40,7 @@ def obtener_nombre_y_precio(link):
 
 
 def generar_html(resultados):
-    public_key = os.getenv('PUBLIC_KEY', 'default_public_key')
+    public_key = os.getenv("PUBLIC_KEY", "default_public_key")
 
     html_content = """
     <!DOCTYPE html>
@@ -76,7 +76,9 @@ def generar_html(resultados):
     </head>
     <body>
     <br/>
-    """.format(public_key)
+    """.format(
+        public_key
+    )
 
     for (
         nombre_publicacion,
