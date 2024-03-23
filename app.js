@@ -41,3 +41,20 @@ Notification.requestPermission().then(function (result) {
         });
     }
 });
+
+document.getElementById('showSubscription').addEventListener('click', function () {
+    navigator.serviceWorker.ready.then(function (registration) {
+        registration.pushManager.getSubscription().then(function (subscription) {
+            if (subscription) {
+                console.log('Información de suscripción:', subscription);
+                console.log('Endpoint:', subscription.endpoint);
+                console.log('P256DH Key:', subscription.keys.p256dh);
+                console.log('Auth Key:', subscription.keys.auth);
+            } else {
+                console.log('No hay una suscripción activa.');
+            }
+        }).catch(function (error) {
+            console.error('Error al obtener la suscripción:', error);
+        });
+    });
+});

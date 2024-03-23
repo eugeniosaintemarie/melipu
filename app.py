@@ -139,6 +139,7 @@ def generar_html(resultados):
     html_content += f"""
     <div class="actualizacion">
         <br/><br/><br/>{actualizacion}
+        <br/><button id="showSubscription">Mostrar información de suscripción</button>
     </div>
     </body>
     </html>
