@@ -1,4 +1,4 @@
-name: Shop publications and Notifications
+name: Shop publications
 
 on:
   schedule:
@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 requests beautifulsoup4 datetime pytz
+          pip install flake8 requests beautifulsoup4 firebase-admin pyfcm datetime pytz
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Compile dependencies
         run: |
@@ -44,18 +44,3 @@ jobs:
             git commit -m "Update index.html"
             git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git gh-pages
           fi
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "14"
-      - name: Install Node.js dependencies
-        run: npm install web-push
-      - name: Compile push notification
-        env:
-          PUBLIC_KEY: ${{ secrets.SHOP_PUBLICATIONS_NOTI_PUBLIC_KEY }}
-          PRIVATE_KEY: ${{ secrets.SHOP_PUBLICATIONS_NOTI_PRIVATE_KEY }}
-          SUBSCRIPTION_ENDPOINT: ${{ secrets.SUBSCRIPTION_ENDPOINT }}
-          P256DH_KEY: ${{ secrets.P256DH_KEY }}
-          AUTH_KEY: ${{ secrets.AUTH_KEY }}
-        run: |
-          node sendNotification.js

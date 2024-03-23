@@ -1,8 +1,29 @@
-import os
 import requests
 from bs4 import BeautifulSoup
+import firebase_admin
+from firebase_admin import credentials, messaging
+from pyfcm import FCMNotification
 import datetime
 import pytz
+
+
+def obtener_tokens():
+    db = firestore.client()
+    tokens_ref = db.collection("tokens")
+    tokens = [doc.to_dict()["token"] for doc in tokens_ref.stream()]
+    return tokens
+
+
+def enviar_notificacion(titulo, cuerpo, tokens):
+    message = messaging.MulticastMessage(
+        notification=messaging.Notification(
+            title=titulo,
+            body=cuerpo,
+        ),
+        tokens=tokens,
+    )
+
+    response = messaging.send_multicast(message)
 
 
 def simular_publicacion_ficticia():
@@ -40,14 +61,15 @@ def obtener_nombre_y_precio(link):
 
 
 def generar_html(resultados):
-    public_key = os.getenv('PUBLIC_KEY', 'BH6nVHnfduLF90IoVl-1-xAN_87d67IAn8QQ687b9dkXwXYX4HFdQzS-4hwNQ41y1yTxachsbHrFIqcJ7-AutOw')
+    push_service = FCMNotification(
+        api_key="BBZWqDE__B3Y8ApoiALHUXuvQAxMejyJQWF09sKN20auDT1ojrOTt82QLCALgh645j9lZ6ReVokHfkiUyLZVqDw"
+    )
 
     html_content = """
     <!DOCTYPE html>
     <html>
     <head>
         <title>Shop publications</title>
-        <script> window.vapidPublicKey = '{}'; </script>
         <script src="https://eugeniosaintemarie.github.io/shop-publications/app.js"></script>
         <link rel="icon" type="image/svg+xml" href="https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/5.21.22/mercadolibre/favicon.svg">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -76,9 +98,7 @@ def generar_html(resultados):
     </head>
     <body>
     <br/>
-    """.format(
-        public_key
-    )
+    """
 
     for (
         nombre_publicacion,
@@ -139,7 +159,6 @@ def generar_html(resultados):
     html_content += f"""
     <div class="actualizacion">
         <br/><br/><br/>{actualizacion}
-        <br/><button id="showSubscription">Mostrar información de suscripción</button>
     </div>
     </body>
     </html>
@@ -174,48 +193,64 @@ def main():
         precio_anterior_str = (
             str(precio_anterior) if precio_anterior is not None else None
         )
-    resultados.append(
-        (
-            nombre_publicacion,
-            precio_actual_str,
-            precio_anterior_str,
-            enlace_ficticio,
-            None,
-        )
-    )
+        enlaces.append(enlace_ficticio)
 
     for enlace in enlaces:
-        nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(enlace)
-        if nombre_publicacion and precio_nuevo:
-            nombre_publicacion = nombre_publicacion[:32] + "..."
-            if enlace not in precios_guardados:
-                precios_guardados[enlace] = {
-                    "precio_actual": precio_nuevo,
-                    "precio_anterior": None,
-                    "descuento": descuento,
-                }
-                resultados.append(
-                    (nombre_publicacion, precio_nuevo, None, enlace, descuento)
+        if enlace == "https://google.com"
+            nombre_publicacion, precio_nuevo, precio_anterior = publicacion_ficticia
+            precio_nuevo_str = str(precio_nuevo)
+            precio_anterior_str = str(precio_anterior)
+        else:
+            nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(enlace)
+            if nombre_publicacion and precio_nuevo:
+                nombre_publicacion = nombre_publicacion[:32] + "..."
+                precio_nuevo_str = str(precio_nuevo)
+                precio_anterior_str = (
+                    str(precios_guardados[enlace]["precio_anterior"]) if enlace in precios_guardados else None
                 )
             else:
-                precios_guardados[enlace]["precio_anterior"] = precios_guardados[
-                    enlace
-                ]["precio_actual"]
-                precios_guardados[enlace]["precio_actual"] = precio_nuevo
-                precios_guardados[enlace]["descuento"] = descuento
-                resultados.append(
-                    (
-                        nombre_publicacion,
-                        precio_nuevo,
-                        precios_guardados[enlace]["precio_anterior"],
-                        enlace,
-                        descuento,
-                    )
-                )
+                continue
 
-        html_content = generar_html(resultados)
-        with open("index.html", "w", encoding="utf-8") as html_file:
-            html_file.write(html_content)
+        if enlace not in precios_guardados:
+            precios_guardados[enlace] = {
+                "precio_actual": precio_nuevo_str,
+                "precio_anterior": precio_anterior_str,
+                "descuento": 10,
+            }
+            resultados.append(
+                (
+                    nombre_publicacion,
+                    precio_nuevo_str,
+                    precio_anterior_str,
+                    enlace,
+                    None,
+                )
+            )
+        else:
+            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace]["precio_actual"]
+            precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
+            precios_guardados[enlace]["descuento"] = 10
+            resultados.append(
+                (
+                    nombre_publicacion,
+                    precio_nuevo_str,
+                    precios_guardados[enlace]["precio_anterior"],
+                    enlace,
+                    None,
+                )
+            )
+
+        if precios_guardados[enlace]["precio_anterior"] is not None and abs(float(precios_guardados[enlace]["precio_anterior"]) - float(precio_nuevo_str)) > 1:
+            tokens = obtener_tokens()
+
+            titulo = f'Vario el precio de: {nombre_publicacion}'
+            cuerpo = f'Ahora es de: {precio_nuevo}'
+
+            enviar_notificacion(titulo, cuerpo, tokens)
+
+    html_content = generar_html(resultados)
+    with open("index.html", "w", encoding="utf-8") as html_file:
+        html_file.write(html_content)
 
 
 if __name__ == "__main__":

@@ -11,62 +11,29 @@ Notification.requestPermission().then(function (result) {
     console.log(result);
 });
 
-function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-}
-
-Notification.requestPermission().then(function (result) {
-    if (result === 'granted') {
-        navigator.serviceWorker.ready.then(function (registration) {
-            registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(window.vapidPublicKey)
-            }).then(function (subscription) {
-                registration.pushManager.getSubscription().then(function (existingSubscription) {
-                    if (existingSubscription) {
-                        existingSubscription.unsubscribe().then(function (successful) {
-                            registration.pushManager.subscribe(subscriptionOptions);
-                        });
-                    } else {
-                        registration.pushManager.subscribe(subscriptionOptions);
-                    }
-                });
-
-                console.log('User is subscribed:', subscription);
-                console.log('Subscription Endpoint:', subscription.endpoint);
-                console.log('P256DH Key:', subscription.keys.p256dh);
-                console.log('Auth Key:', subscription.keys.auth);
-            }).catch(function (error) {
-                console.error('Failed to subscribe the user: ', error);
-            });
-        });
-    }
+firebase.firestore().settings({
+    timestampsInSnapshots: true
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('showSubscription').addEventListener('click', function () {
-        navigator.serviceWorker.ready.then(function (registration) {
-            registration.pushManager.getSubscription().then(function (subscription) {
-                if (subscription) {
-                    console.log('Información de suscripción:', subscription);
-                    console.log('Endpoint:', subscription.endpoint);
-                    console.log('P256DH Key:', subscription.keys.p256dh);
-                    console.log('Auth Key:', subscription.keys.auth);
-                } else {
-                    console.log('No hay una suscripción activa.');
-                }
-            }).catch(function (error) {
-                console.error('Error al obtener la suscripción:', error);
-            });
-        });
-    });
+var firebaseConfig = {
+    apiKey: "AIzaSyDpEOWIwaO1Ce0zRdOlIcNep5BXRJ1oO_Q",
+    authDomain: "shop-publications-9a9ae.firebaseapp.com",
+    projectId: "shop-publications-9a9ae",
+    storageBucket: "shop-publications-9a9ae.appspot.com",
+    messagingSenderId: "628006825968",
+    appId: "1:628006825968:web:15b2c6ff577d0843007735"
+};
+firebase.initializeApp(firebaseConfig);
+
+firebase.messaging().getToken({ vapidKey: 'BBZWqDE__B3Y8ApoiALHUXuvQAxMejyJQWF09sKN20auDT1ojrOTt82QLCALgh645j9lZ6ReVokHfkiUyLZVqDw' }).then((currentToken) => {
+    if (currentToken) {
+        console.log('Token de dispositivo:', currentToken);
+        firebase.firestore().collection('tokens').add({ token: currentToken })
+            .then(() => console.log('Token guardado exitosamente'))
+            .catch((error) => console.error('Error al guardar el token:', error));
+    } else {
+        console.log('No se pudo obtener el token de dispositivo.');
+    }
+}).catch((err) => {
+    console.log('Error al obtener el token de dispositivo:', err);
 });
