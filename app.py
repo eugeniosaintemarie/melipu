@@ -63,7 +63,7 @@ def obtener_nombre_y_precio(link):
         precio_element = None
 
     descuento_element = precio_container.select_one(
-        ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM"
+        ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
     )
     descuento = descuento_element.get_text().strip() if descuento_element else None
 
