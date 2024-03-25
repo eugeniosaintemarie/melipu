@@ -121,7 +121,7 @@ def generar_html(resultados, enlaces, precios_guardados):
     for enlace in enlaces:
         if enlace == "https://google.com":
             nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
-                simular_publicacion_ficticia()
+                publicacion_ficticia
             )
             precio_nuevo_str = str(precio_nuevo)
             precio_anterior_str = str(precio_anterior)
