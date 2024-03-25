@@ -205,12 +205,12 @@ def main():
         enlaces = [line.strip() for line in file]
 
     if publicacion_ficticia:
-        nombre_publicacion, precio_actual, precio_anterior = publicacion_ficticia
+        nombre_publicacion, precio_actual, precio_anterior, descuento = (
+            publicacion_ficticia
+        )
         enlace_ficticio = "https://google.com"
         precio_actual_str = str(precio_actual)
-        precio_anterior_str = (
-            str(precio_anterior) if precio_anterior is not None else None
-        )
+        precio_anterior_str = str(precio_anterior)
         enlaces.append(enlace_ficticio)
 
     for enlace in enlaces:
