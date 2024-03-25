@@ -193,9 +193,10 @@ def generar_html(resultados, enlaces, precios_guardados):
 
 def main():
     mostrar_publicacion_ficticia = True
-    publicacion_ficticia = (
-        simular_publicacion_ficticia() if mostrar_publicacion_ficticia else None
-    )
+    publicacion_ficticia = None
+
+    if mostrar_publicacion_ficticia:
+        publicacion_ficticia = simular_publicacion_ficticia()
 
     enlaces = []
     precios_guardados = {}
