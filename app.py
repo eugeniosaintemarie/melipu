@@ -207,6 +207,7 @@ def main():
     enlaces = []
     precios_guardados = {}
     resultados = []
+    enlaces_procesados = set()
 
     with open("links.txt", "r") as file:
         enlaces = [line.strip() for line in file]
@@ -221,6 +222,9 @@ def main():
         enlaces.append(enlace_ficticio)
 
     for enlace in enlaces:
+        if enlace in enlaces_procesados:
+            continue
+
         if enlace == "https://google.com":
             nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
                 publicacion_ficticia
@@ -241,6 +245,7 @@ def main():
                 )
             else:
                 continue
+
         if enlace not in precios_guardados:
             precios_guardados[enlace] = {
                 "precio_actual": precio_nuevo_str,
@@ -271,6 +276,8 @@ def main():
                     descuento,
                 )
             )
+
+        enlaces_procesados.add(enlace)
 
     html_content = generar_html(
         resultados, enlaces, precios_guardados, publicacion_ficticia
