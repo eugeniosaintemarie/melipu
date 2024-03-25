@@ -175,7 +175,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre_publicacion}</a>
-            <span class="precio_actual">{precio_nuevo_formateado} {descuento_texto}</span>
+            <span class="precio_actual">{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span>
             <span class="precio_anterior">{precio_anterior_formateado}</span>
         </div>
         """
