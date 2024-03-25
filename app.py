@@ -8,6 +8,7 @@ from pyfcm import FCMNotification
 import datetime
 import pytz
 
+
 firebase_admin_sdk_json_str = os.environ["FIREBASE_ADMIN_SDK"]
 firebase_admin_sdk_json = json.loads(firebase_admin_sdk_json_str)
 cred = credentials.Certificate(firebase_admin_sdk_json)
@@ -163,6 +164,9 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         enlace,
         descuento,
     ) in resultados:
+        precio_nuevo = float(precio_nuevo) if precio_nuevo else None
+        precio_anterior = float(precio_anterior) if precio_anterior else None
+
         precio_nuevo_formateado = f"${precio_nuevo:,.0f}" if precio_nuevo else "N/A"
         precio_anterior_formateado = (
             f"${precio_anterior:,.0f}" if precio_anterior else "N/A"
