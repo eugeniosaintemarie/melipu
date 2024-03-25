@@ -118,57 +118,58 @@ def generar_html(resultados):
     <br/>
     """
 
-
-for enlace in enlaces:
-    if enlace == "https://google.com":
-        nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
-            simular_publicacion_ficticia()
-        )
-        precio_nuevo_str = str(precio_nuevo)
-        precio_anterior_str = str(precio_anterior)
-    else:
-        nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(enlace)
-        if nombre_publicacion and precio_nuevo:
-            nombre_publicacion = nombre_publicacion[:32] + "..."
+    for enlace in enlaces:
+        if enlace == "https://google.com":
+            nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
+                simular_publicacion_ficticia()
+            )
             precio_nuevo_str = str(precio_nuevo)
-            precio_anterior_str = (
-                str(precios_guardados[enlace]["precio_anterior"])
-                if enlace in precios_guardados
-                else None
+            precio_anterior_str = str(precio_anterior)
+        else:
+            nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(
+                enlace
+            )
+            if nombre_publicacion and precio_nuevo:
+                nombre_publicacion = nombre_publicacion[:32] + "..."
+                precio_nuevo_str = str(precio_nuevo)
+                precio_anterior_str = (
+                    str(precios_guardados[enlace]["precio_anterior"])
+                    if enlace in precios_guardados
+                    else None
+                )
+            else:
+                continue
+
+        if enlace not in precios_guardados:
+            precios_guardados[enlace] = {
+                "precio_actual": precio_nuevo_str,
+                "precio_anterior": precio_anterior_str,
+                "descuento": descuento,
+            }
+            resultados.append(
+                (
+                    nombre_publicacion,
+                    precio_nuevo_str,
+                    precio_anterior_str,
+                    enlace,
+                    descuento,
+                )
             )
         else:
-            continue
-
-    if enlace not in precios_guardados:
-        precios_guardados[enlace] = {
-            "precio_actual": precio_nuevo_str,
-            "precio_anterior": precio_anterior_str,
-            "descuento": descuento,
-        }
-        resultados.append(
-            (
-                nombre_publicacion,
-                precio_nuevo_str,
-                precio_anterior_str,
-                enlace,
-                descuento,
+            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
+                "precio_actual"
+            ]
+            precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
+            precios_guardados[enlace]["descuento"] = descuento
+            resultados.append(
+                (
+                    nombre_publicacion,
+                    precio_nuevo_str,
+                    precios_guardados[enlace]["precio_anterior"],
+                    enlace,
+                    descuento,
+                )
             )
-        )
-    else:
-        precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
-            "precio_actual"
-        ]
-        precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
-        precios_guardados[enlace]["descuento"] = descuento
-        resultados.append(
-            (
-                nombre_publicacion,
-                precio_nuevo_str,
-                precios_guardados[enlace]["precio_anterior"],
-                enlace,
-                descuento,
-            )
-        )
 
     actualizacion = datetime.datetime.now(
         pytz.timezone("America/Argentina/Buenos_Aires")
