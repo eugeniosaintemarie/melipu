@@ -223,6 +223,7 @@ def main():
     for enlace in enlaces:
         if enlace in enlaces_procesados:
             continue
+        enlaces_procesados.add(enlace)
 
         if enlace == "https://google.com":
             nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
