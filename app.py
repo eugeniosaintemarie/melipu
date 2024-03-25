@@ -8,16 +8,9 @@ from pyfcm import FCMNotification
 import datetime
 import pytz
 
-
 firebase_admin_sdk_json_str = os.environ["FIREBASE_ADMIN_SDK"]
-
-
 firebase_admin_sdk_json = json.loads(firebase_admin_sdk_json_str)
-
-
 cred = credentials.Certificate(firebase_admin_sdk_json)
-
-
 firebase_admin.initialize_app(cred)
 
 
@@ -40,7 +33,6 @@ def enviar_notificacion(titulo, cuerpo, tokens):
         ),
         tokens=tokens,
     )
-
     response = messaging.send_multicast(message)
 
 
@@ -51,22 +43,18 @@ def simular_publicacion_ficticia():
 def obtener_nombre_y_precio(link):
     response = requests.get(link)
     soup = BeautifulSoup(response.text, "html.parser")
-
     class_id_nombre = "ui-pdp-title"
     nombre_element = soup.find(class_=class_id_nombre)
-
     precio_container = soup.find("div", class_="ui-pdp-price__second-line")
     if precio_container:
         class_id_precio = "andes-money-amount__fraction"
         precio_element = precio_container.find("span", class_=class_id_precio)
     else:
         precio_element = None
-
     descuento_element = precio_container.select_one(
         ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
     )
     descuento = descuento_element.get_text().strip() if descuento_element else None
-
     if precio_element:
         precio_actual = precio_element.get_text().strip()
         precio_actual = precio_actual.replace(".", "").replace(",", ".")
@@ -82,7 +70,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     push_service = FCMNotification(
         api_key="BBZWqDE__B3Y8ApoiALHUXuvQAxMejyJQWF09sKN20auDT1ojrOTt82QLCALgh645j9lZ6ReVokHfkiUyLZVqDw"
     )
-
     html_content = """
     <!DOCTYPE html>
     <html>
@@ -117,7 +104,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     <body>
     <br/>
     """
-
     for enlace in enlaces:
         if enlace == "https://google.com":
             nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
@@ -139,7 +125,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                 )
             else:
                 continue
-
         if enlace not in precios_guardados:
             precios_guardados[enlace] = {
                 "precio_actual": precio_nuevo_str,
@@ -170,7 +155,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                     descuento,
                 )
             )
-
     actualizacion = datetime.datetime.now(
         pytz.timezone("America/Argentina/Buenos_Aires")
     ).strftime("%Y/%m/%d %H:%M")
@@ -181,20 +165,17 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     </body>
     </html>
     """
-
     html_content += """
         <script src="https://eugeniosaintemarie.github.io/shop-publications/app.js"></script>
         </body>
         </html>
     """
-
     return html_content
 
 
 def main():
     mostrar_publicacion_ficticia = True
     publicacion_ficticia = None
-
     if mostrar_publicacion_ficticia:
         publicacion_ficticia = simular_publicacion_ficticia()
 
@@ -216,7 +197,9 @@ def main():
 
     for enlace in enlaces:
         if enlace == "https://google.com":
-            nombre_publicacion, precio_nuevo, precio_anterior, descuento = publicacion_ficticia
+            nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
+                publicacion_ficticia
+            )
             precio_nuevo_str = str(precio_nuevo)
             precio_anterior_str = str(precio_anterior)
         else:
@@ -233,12 +216,11 @@ def main():
                 )
             else:
                 continue
-
         if enlace not in precios_guardados:
             precios_guardados[enlace] = {
                 "precio_actual": precio_nuevo_str,
                 "precio_anterior": precio_anterior_str,
-                "descuento": 10,
+                "descuento": descuento,
             }
             resultados.append(
                 (
@@ -246,7 +228,7 @@ def main():
                     precio_nuevo_str,
                     precio_anterior_str,
                     enlace,
-                    None,
+                    descuento,
                 )
             )
         else:
@@ -254,14 +236,14 @@ def main():
                 "precio_actual"
             ]
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
-            precios_guardados[enlace]["descuento"] = 10
+            precios_guardados[enlace]["descuento"] = descuento
             resultados.append(
                 (
                     nombre_publicacion,
                     precio_nuevo_str,
                     precios_guardados[enlace]["precio_anterior"],
                     enlace,
-                    None,
+                    descuento,
                 )
             )
 
