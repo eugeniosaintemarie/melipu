@@ -223,6 +223,7 @@ def main():
     for enlace in enlaces:
         if enlace in enlaces_procesados:
             continue
+
         enlaces_procesados.add(enlace)
 
         if enlace == "https://google.com":
@@ -276,8 +277,6 @@ def main():
                     descuento,
                 )
             )
-
-        enlaces_procesados.add(enlace)
 
     html_content = generar_html(
         resultados, enlaces, precios_guardados, publicacion_ficticia
