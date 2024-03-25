@@ -78,7 +78,7 @@ def obtener_nombre_y_precio(link):
         return None, None, None
 
 
-def generar_html(resultados, enlaces, precios_guardados):
+def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     push_service = FCMNotification(
         api_key="BBZWqDE__B3Y8ApoiALHUXuvQAxMejyJQWF09sKN20auDT1ojrOTt82QLCALgh645j9lZ6ReVokHfkiUyLZVqDw"
     )
@@ -280,7 +280,9 @@ def main():
 
             enviar_notificacion(titulo, cuerpo, tokens)
 
-    html_content = html_content = generar_html(resultados, enlaces, precios_guardados)
+    html_content = generar_html(
+        resultados, enlaces, precios_guardados, publicacion_ficticia
+    )
     with open("index.html", "w", encoding="utf-8") as html_file:
         html_file.write(html_content)
 
