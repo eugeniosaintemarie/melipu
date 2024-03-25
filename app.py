@@ -155,6 +155,23 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                     descuento,
                 )
             )
+
+    for (
+        nombre_publicacion,
+        precio_nuevo,
+        precio_anterior,
+        enlace,
+        descuento,
+    ) in resultados:
+        html_content += f"""
+        <div class="item">
+            <a href="{enlace}" class="nombre">{nombre_publicacion}</a>
+            <span class="precio_actual">{precio_nuevo}</span>
+            <span class="precio_anterior">{precio_anterior}</span>
+            <span class="descuento">{descuento}</span>
+        </div>
+        """
+
     actualizacion = datetime.datetime.now(
         pytz.timezone("America/Argentina/Buenos_Aires")
     ).strftime("%Y/%m/%d %H:%M")
@@ -246,21 +263,6 @@ def main():
                     descuento,
                 )
             )
-
-        if (
-            precios_guardados[enlace]["precio_anterior"] is not None
-            and abs(
-                float(precios_guardados[enlace]["precio_anterior"])
-                - float(precio_nuevo_str)
-            )
-            > 1
-        ):
-            tokens = obtener_tokens()
-
-            titulo = f"Vario el precio de: {nombre_publicacion}"
-            cuerpo = f"Ahora es de: {precio_nuevo}"
-
-            enviar_notificacion(titulo, cuerpo, tokens)
 
     html_content = generar_html(
         resultados, enlaces, precios_guardados, publicacion_ficticia
