@@ -216,7 +216,7 @@ def main():
 
     for enlace in enlaces:
         if enlace == "https://google.com":
-            nombre_publicacion, precio_nuevo, precio_anterior = publicacion_ficticia
+            nombre_publicacion, precio_nuevo, precio_anterior, descuento = publicacion_ficticia
             precio_nuevo_str = str(precio_nuevo)
             precio_anterior_str = str(precio_anterior)
         else:
