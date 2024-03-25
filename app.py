@@ -170,7 +170,11 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         precio_anterior_formateado = (
             f"${precio_anterior:,.0f}" if precio_anterior else "N/A"
         )
-        descuento_texto = f"{descuento} OFF" if descuento else ""
+        descuento_texto = (
+            descuento
+            if descuento and "OFF" not in descuento
+            else f"{descuento} OFF" if descuento else ""
+        )
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
@@ -198,7 +202,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
 
 
 def main():
-    mostrar_publicacion_ficticia = True
+    mostrar_publicacion_ficticia = False
     publicacion_ficticia = None
     if mostrar_publicacion_ficticia:
         publicacion_ficticia = simular_publicacion_ficticia()
