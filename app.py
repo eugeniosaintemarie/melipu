@@ -68,6 +68,7 @@ def obtener_nombre_y_precio(link):
 
 
 def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
+    print("Iniciando generación de HTML...")
     push_service = FCMNotification(
         api_key="BBZWqDE__B3Y8ApoiALHUXuvQAxMejyJQWF09sKN20auDT1ojrOTt82QLCALgh645j9lZ6ReVokHfkiUyLZVqDw"
     )
@@ -106,6 +107,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     <br/>
     """
     for enlace in enlaces:
+        print(f"Procesando enlace: {enlace}")
         if enlace == "https://google.com":
             nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
                 publicacion_ficticia
@@ -126,6 +128,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                 )
             else:
                 continue
+
         if enlace not in precios_guardados:
             precios_guardados[enlace] = {
                 "precio_actual": precio_nuevo_str,
@@ -164,6 +167,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         enlace,
         descuento,
     ) in resultados:
+        print(f"Agregando publicación al HTML: {nombre_publicacion}")
         precio_nuevo = float(precio_nuevo) if precio_nuevo else None
         precio_anterior = float(precio_anterior) if precio_anterior else None
         precio_nuevo_formateado = f"${precio_nuevo:,.0f}" if precio_nuevo else "N/A"
@@ -189,11 +193,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     </body>
     </html>
     """
-    html_content += """
-        <script src="https://eugeniosaintemarie.github.io/shop-publications/app.js"></script>
-        </body>
-        </html>
-    """
+    print("Finalizando generación de HTML...")
     return html_content
 
 
