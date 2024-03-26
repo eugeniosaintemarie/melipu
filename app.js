@@ -1,7 +1,7 @@
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
         navigator.serviceWorker
-            .register("https://eugeniosaintemarie.github.io/shop-publications/serviceWorker.js")
+            .register("https://eugeniosaintemarie.github.io/melipu/serviceWorker.js")
             .then(res => console.log("service worker registered"))
             .catch(err => console.log("service worker not registered", err))
     })
@@ -17,9 +17,9 @@ firebase.firestore().settings({
 
 var firebaseConfig = {
     apiKey: "AIzaSyDpEOWIwaO1Ce0zRdOlIcNep5BXRJ1oO_Q",
-    authDomain: "shop-publications-9a9ae.firebaseapp.com",
-    projectId: "shop-publications-9a9ae",
-    storageBucket: "shop-publications-9a9ae.appspot.com",
+    authDomain: "melipu-9a9ae.firebaseapp.com",
+    projectId: "melipu-9a9ae",
+    storageBucket: "melipu-9a9ae.appspot.com",
     messagingSenderId: "628006825968",
     appId: "1:628006825968:web:15b2c6ff577d0843007735"
 };

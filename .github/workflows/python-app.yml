@@ -1,4 +1,4 @@
-name: Shop publications
+name: MELIPU
 
 on:
   schedule:
@@ -30,7 +30,7 @@ jobs:
         run: |
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Shop publications
+      - name: MELIPU
         env:
           FIREBASE_ADMIN_SDK: ${{ secrets.FIREBASE_ADMIN_SDK }}
         run: |
@@ -44,5 +44,5 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Update index.html"
-            git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/shop-publications.git gh-pages
+            git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/melipu.git gh-pages
           fi
