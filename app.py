@@ -166,16 +166,21 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     ) in resultados:
         precio_nuevo = float(precio_nuevo) if precio_nuevo else None
         precio_anterior = float(precio_anterior) if precio_anterior else None
-        precio_nuevo_formateado = f"${precio_nuevo:,.0f}" if precio_nuevo else "N/A"
-        precio_anterior_formateado = (
-            f"${precio_anterior:,.0f}" if precio_anterior else "N/A"
+        precio_nuevo_formateado = (
+            f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "n/a"
         )
-        descuento_texto = f"{descuento} OFF" if descuento and descuento != "OFF" else ""
+        precio_anterior_formateado = (
+            f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "n/a"
+        )
+        if descuento and "OFF" not in descuento:
+            descuento_texto = f"{descuento} OFF"
+        else:
+            descuento_texto = descuento if descuento else ""
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
-            <span class="precio_actual">>{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span></br>
-            <span class="precio_anterior"><{precio_anterior_formateado}</span></br>
+            <span class="precio_actual"><span class="mark">></span>{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span></br>
+            <span class="precio_anterior"><span class="mark"><</span>{precio_anterior_formateado}</span></br>
         </div>
         """
 
