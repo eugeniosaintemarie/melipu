@@ -94,12 +94,13 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
             .item { margin-bottom: 20px; }
             .nombre { color: white; font-weight: bold; text-decoration: none; }
-            .mark { color: white; }
+            .mark_before { color: white; }
+            .mark_after { color: grey; }
             .precio_actual { color: yellow; }
             .precio_anterior { color: orange; }
             .precio_no_disponible { color: red; }
             .descuento { color: green; font-size: 0.80em; }
-            .actualizacion { color: #9E9E9E; font-size: 0.75em; }
+            .actualizacion { color: #FFD100; font-size: 0.75em; }
         </style>
     </head>
     <body>
@@ -167,10 +168,10 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         precio_nuevo = float(precio_nuevo) if precio_nuevo else None
         precio_anterior = float(precio_anterior) if precio_anterior else None
         precio_nuevo_formateado = (
-            f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "n/a"
+            f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "-"
         )
         precio_anterior_formateado = (
-            f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "n/a"
+            f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
         )
         if descuento and "OFF" not in descuento:
             descuento_texto = f"{descuento} OFF"
@@ -179,8 +180,8 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
-            <span class="precio_actual"><span class="mark">></span>{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span></br>
-            <span class="precio_anterior"><span class="mark"><</span>{precio_anterior_formateado}</span></br>
+            <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span></br>
+            <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
         </div>
         """
 
