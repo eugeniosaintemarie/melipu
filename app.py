@@ -89,7 +89,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/melipu/image/icon/icon-384x384.png" />
         <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/melipu/image/icon/icon-512x512.png" />
         <meta name="apple-mobile-web-app-status-bar" content="#ffe600" />
-        <meta name="theme-color" content="#2d3277" />
+        <meta name="theme-color" content="#ffe600" />
         <style>
             body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
             .item { margin-bottom: 20px; }
@@ -174,8 +174,8 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
-            <span class="precio_actual">{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span></br>
-            <span class="precio_anterior">{precio_anterior_formateado}</span></br>
+            <span class="precio_actual">>{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span></br>
+            <span class="precio_anterior"><{precio_anterior_formateado}</span></br>
         </div>
         """
 
