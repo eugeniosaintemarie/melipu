@@ -246,23 +246,21 @@ def main():
             else:
                 continue
 
-        if any(resultado[3] == enlace for resultado in resultados):
-            continue
-
-        precios_guardados[enlace] = {
-            "precio_actual": precio_nuevo_str,
-            "precio_anterior": precio_anterior_str,
-            "descuento": descuento,
-        }
-        resultados.append(
-            (
-                nombre_publicacion,
-                precio_nuevo_str,
-                precio_anterior_str,
-                enlace,
-                descuento,
+        if enlace not in enlaces_procesados:
+            precios_guardados[enlace] = {
+                "precio_actual": precio_nuevo_str,
+                "precio_anterior": precio_anterior_str,
+                "descuento": descuento,
+            }
+            resultados.append(
+                (
+                    nombre_publicacion,
+                    precio_nuevo_str,
+                    precio_anterior_str,
+                    enlace,
+                    descuento,
+                )
             )
-        )
 
     html_content = generar_html(
         resultados, enlaces, precios_guardados, publicacion_ficticia
