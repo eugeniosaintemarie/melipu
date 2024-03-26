@@ -68,7 +68,6 @@ def obtener_nombre_y_precio(link):
 
 
 def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
-    print("Iniciando generación de HTML...")
     push_service = FCMNotification(
         api_key="BBZWqDE__B3Y8ApoiALHUXuvQAxMejyJQWF09sKN20auDT1ojrOTt82QLCALgh645j9lZ6ReVokHfkiUyLZVqDw"
     )
@@ -107,7 +106,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     <br/>
     """
     for enlace in enlaces:
-        print(f"Procesando enlace: {enlace}")
         if enlace == "https://google.com":
             nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
                 publicacion_ficticia
@@ -128,7 +126,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                 )
             else:
                 continue
-
         if enlace not in precios_guardados:
             precios_guardados[enlace] = {
                 "precio_actual": precio_nuevo_str,
@@ -167,7 +164,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         enlace,
         descuento,
     ) in resultados:
-        print(f"Agregando publicación al HTML: {nombre_publicacion}")
         precio_nuevo = float(precio_nuevo) if precio_nuevo else None
         precio_anterior = float(precio_anterior) if precio_anterior else None
         precio_nuevo_formateado = f"${precio_nuevo:,.0f}" if precio_nuevo else "N/A"
@@ -193,7 +189,11 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     </body>
     </html>
     """
-    print("Finalizando generación de HTML...")
+    html_content += """
+        <script src="https://eugeniosaintemarie.github.io/shop-publications/app.js"></script>
+        </body>
+        </html>
+    """
     return html_content
 
 
@@ -223,7 +223,6 @@ def main():
     for enlace in enlaces:
         if enlace in enlaces_procesados:
             continue
-
         enlaces_procesados.add(enlace)
 
         if enlace == "https://google.com":
@@ -268,23 +267,22 @@ def main():
             ]
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
             precios_guardados[enlace]["descuento"] = descuento
-            resultados.append(
-                (
-                    nombre_publicacion,
-                    precio_nuevo_str,
-                    precios_guardados[enlace]["precio_anterior"],
-                    enlace,
-                    descuento,
-                )
-            )
+            for i, resultado in enumerate(resultados):
+                if resultado[3] == enlace:
+                    resultados[i] = (
+                        nombre_publicacion,
+                        precio_nuevo_str,
+                        precios_guardados[enlace]["precio_anterior"],
+                        enlace,
+                        descuento,
+                    )
+                    break
 
-    if not hasattr(main, "generar_html_called"):
-        setattr(main, "generar_html_called", True)
-        html_content = generar_html(
-            resultados, enlaces, precios_guardados, publicacion_ficticia
-        )
-        with open("index.html", "w", encoding="utf-8") as html_file:
-            html_file.write(html_content)
+    html_content = generar_html(
+        resultados, enlaces, precios_guardados, publicacion_ficticia
+    )
+    with open("index.html", "w", encoding="utf-8") as html_file:
+        html_file.write(html_content)
 
 
 if __name__ == "__main__":
