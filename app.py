@@ -158,6 +158,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             )
         )
 
+    publicaciones_agregadas = set()
     for (
         nombre_publicacion,
         precio_nuevo,
@@ -165,22 +166,24 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         enlace,
         descuento,
     ) in resultados:
-        precio_nuevo = float(precio_nuevo) if precio_nuevo else None
-        precio_anterior = float(precio_anterior) if precio_anterior else None
-        precio_nuevo_formateado = (
-            f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "-"
-        )
-        precio_anterior_formateado = (
-            f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
-        )
-        descuento_texto = descuento if descuento else ""
-        html_content += f"""
-        <div class="item">
-            <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
-            <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span></br>
-            <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
-        </div>
-        """
+        if enlace not in publicaciones_agregadas:
+            publicaciones_agregadas.add(enlace)
+            precio_nuevo = float(precio_nuevo) if precio_nuevo else None
+            precio_anterior = float(precio_anterior) if precio_anterior else None
+            precio_nuevo_formateado = (
+                f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "-"
+            )
+            precio_anterior_formateado = (
+                f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
+            )
+            descuento_texto = f"{descuento} OFF" if descuento else ""
+            html_content += f"""
+            <div class="item">
+                <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
+                <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span></br>
+                <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
+            </div>
+            """
 
     actualizacion = datetime.datetime.now(
         pytz.timezone("America/Argentina/Buenos_Aires")
