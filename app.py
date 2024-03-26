@@ -249,17 +249,32 @@ def main():
             else:
                 continue
 
-        if enlace not in enlaces_procesados:
+        if enlace not in precios_guardados:
             precios_guardados[enlace] = {
                 "precio_actual": precio_nuevo_str,
-                "precio_anterior": precio_anterior_str,
+                "precio_anterior": None,
                 "descuento": descuento,
             }
             resultados.append(
                 (
                     nombre_publicacion,
                     precio_nuevo_str,
-                    precio_anterior_str,
+                    None,
+                    enlace,
+                    descuento,
+                )
+            )
+        else:
+            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
+                "precio_actual"
+            ]
+            precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
+            precios_guardados[enlace]["descuento"] = descuento
+            resultados.append(
+                (
+                    nombre_publicacion,
+                    precio_nuevo_str,
+                    precios_guardados[enlace]["precio_anterior"],
                     enlace,
                     descuento,
                 )
