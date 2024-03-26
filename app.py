@@ -100,7 +100,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             .precio_anterior { color: orange; }
             .precio_no_disponible { color: red; }
             .descuento { color: green; font-size: 0.80em; }
-            .actualizacion { color: #FFD100; font-size: 0.75em; }
+            .actualizacion { color: grey; font-size: 0.75em; }
         </style>
     </head>
     <body>
