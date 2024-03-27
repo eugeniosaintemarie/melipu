@@ -176,7 +176,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             precio_anterior_formateado = (
                 f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
             )
-            descuento_texto = f"{descuento} OFF" if descuento else ""
+            descuento_texto = f"{descuento}" if descuento else ""
             html_content += f"""
             <div class="item">
                 <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
