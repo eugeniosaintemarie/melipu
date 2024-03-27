@@ -190,7 +190,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     ).strftime("%Y/%m/%d %H:%M")
     html_content += f"""
     <div class="actualizacion">
-        <br/><br/><br/>{actualizacion}
+        <br/>{actualizacion}
     </div>
     </body>
     </html>
