@@ -88,13 +88,13 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/melipu/image/icon/icon-192x192.png" />
         <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/melipu/image/icon/icon-384x384.png" />
         <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/melipu/image/icon/icon-512x512.png" />
-        <meta name="apple-mobile-web-app-status-bar" content="#ffe600" />
-        <meta name="theme-color" content="#ffe600" />
+        <meta name="apple-mobile-web-app-status-bar" content="#FFD101" />
+        <meta name="theme-color" content="#FFD101" />
         <style>
             body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
             .item { margin-bottom: 20px; }
-            .nombre { color: #ffffff; font-weight: bold; text-decoration: none; }
-            .mark_before { color: #ffffff; }
+            .nombre { color: #FAFAFA; font-weight: bold; text-decoration: none; }
+            .mark_before { color: #FAFAFA; }
             .mark_after { color: #9E9E9E; }
             .precio_actual { color: #FFEB3B; }
             .precio_anterior { color: #FF9800; }

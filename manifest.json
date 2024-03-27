@@ -4,8 +4,8 @@
     "description": "",
     "start_url": "/melipu/",
     "display": "standalone",
-    "background_color": "#FFD100",
-    "theme_color": "#FFD100",
+    "background_color": "#FFD101",
+    "theme_color": "#FFD101",
     "orientation": "portrait-primary",
     "icons": [
         {
