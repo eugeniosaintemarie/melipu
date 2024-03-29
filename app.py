@@ -217,7 +217,12 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     ) in resultados:
         if enlace not in publicaciones_agregadas:
             publicaciones_agregadas.add(enlace)
-            precio_nuevo = float(precio_nuevo) if precio_nuevo else None
+            precio_nuevo = (
+                float(precio_nuevo.replace(".", "").replace(",", "."))
+                if precio_nuevo
+                and precio_nuevo.replace(".", "").replace(",", "").isdigit()
+                else None
+            )
             precio_anterior = float(precio_anterior) if precio_anterior else None
             precio_nuevo_formateado = (
                 f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "-"
