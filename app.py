@@ -41,22 +41,22 @@ def simular_publicacion_ficticia():
     return "Producto de prueba", 100000, 150000, "10%"
 
 
-def obtener_nombre_y_precio(link):
+def obtener_publicacion(link):
     response = requests.get(link)
     soup = BeautifulSoup(response.text, "html.parser")
-    class_id_nombre = "ui-pdp-title"
-    nombre_element = soup.find(class_=class_id_nombre)
-    precio_container = soup.find("div", class_="ui-pdp-price__second-line")
+    nombre_obtenido = soup.find(class_="ui-pdp-title")
+    precio_obtenido = soup.find("div", class_="ui-pdp-price__second-line")
 
-    oferta = None
+    oferta_obtenida = None
 
     oferta_element = soup.find(class_="andes-radio__label")
     if oferta_element:
-        oferta = "oferta 1 pago"
+        oferta_obtenida = "oferta 1 pago"
 
-    if precio_container:
-        class_id_precio = "andes-money-amount__fraction"
-        precio_element = precio_container.find("span", class_=class_id_precio)
+    if precio_obtenido:
+        precio_element = precio_obtenido.find(
+            "span", class_="andes-money-amount__fraction"
+        )
         if precio_element:
             precio_actual = precio_element.get_text().strip()
             precio_actual = precio_actual.replace(".", "").replace(",", ".")
@@ -65,13 +65,13 @@ def obtener_nombre_y_precio(link):
     else:
         precio_actual = None
 
-    descuento_element = precio_container.select_one(
+    descuento_obtenido = precio_obtenido.select_one(
         ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
     )
 
-    nombre_publicacion = nombre_element.get_text().strip() if nombre_element else None
+    nombre_publicacion = nombre_obtenido.get_text().strip() if nombre_obtenido else None
 
-    return nombre_publicacion, precio_actual, descuento_element, oferta
+    return nombre_publicacion, precio_actual, descuento_obtenido, oferta_obtenida
 
 
 def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
@@ -131,8 +131,8 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                 precio_anterior,
                 descuento_extraido,
                 oferta,
-            ) = obtener_nombre_y_precio(enlace) + (None,) * (
-                5 - len(obtener_nombre_y_precio(enlace))
+            ) = obtener_publicacion(enlace) + (None,) * (
+                5 - len(obtener_publicacion(enlace))
             )
 
             if nombre_publicacion and precio_nuevo:
@@ -202,7 +202,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             html_content += f"""
             <div class="item">
                 <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
-                <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado} {oferta_texto} <span class="descuento">{descuento_texto}</span></span></br>
+                <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span> {oferta_texto}</span></br>
                 <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
             </div>
             """
@@ -261,7 +261,7 @@ def main():
             precio_anterior_str = str(precio_anterior)
         else:
             nombre_publicacion, precio_nuevo, descuento_extraido, oferta = (
-                obtener_nombre_y_precio(enlace)
+                obtener_publicacion(enlace)
             )
 
             if nombre_publicacion and precio_nuevo:
