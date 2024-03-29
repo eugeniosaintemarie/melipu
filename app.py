@@ -48,13 +48,11 @@ def obtener_nombre_y_precio(link):
     nombre_element = soup.find(class_=class_id_nombre)
     precio_container = soup.find("div", class_="ui-pdp-price__second-line")
 
-    oferta = None  # Inicializamos oferta como None en caso de que no se encuentre
+    oferta = None
 
     oferta_element = soup.find("span", string="1 pago")
     if oferta_element:
-        oferta = (
-            "1 pago"  # Asignamos el valor "1 pago" a oferta si se encuentra el elemento
-        )
+        oferta = "oferta 1 pago"
 
     if precio_container:
         class_id_precio = "andes-money-amount__fraction"
@@ -110,6 +108,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             .precio_no_disponible { color: #F44336; }
             .descuento { color: #4CAF50; font-size: 13px !important; }
             .actualizacion { color: #607D8B; font-size: 10px; }
+            .oferta { color: #2196F3; font-size: 13px; } /* Estilo para el texto de la oferta */
         </style>
     </head>
     <body>
@@ -117,12 +116,18 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
     """
     for enlace in enlaces:
         if enlace == "https://google.com":
-            nombre_publicacion, precio_nuevo, precio_anterior, descuento_extraido = (
-                publicacion_ficticia + (None,)
-            )
+            (
+                nombre_publicacion,
+                precio_nuevo,
+                precio_anterior,
+                descuento_extraido,
+                oferta,
+            ) = publicacion_ficticia + (None,)
             precio_nuevo_str = str(precio_nuevo)
             precio_anterior_str = str(precio_anterior)
-            oferta = None
+            oferta_texto = (
+                ""  # Inicializamos la variable oferta_texto como una cadena vacía
+            )
         else:
             (
                 nombre_publicacion,
@@ -142,6 +147,9 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                     if enlace in precios_guardados
                     else None
                 )
+                oferta_texto = (
+                    f" {oferta}" if oferta else ""
+                )  # Agregamos el texto de la oferta si está presente
             else:
                 continue
         if enlace not in precios_guardados:
@@ -197,11 +205,10 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                 f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
             )
             descuento = f"{descuento_extraido}" if descuento_extraido else ""
-            oferta_texto = f" ({oferta})" if oferta else ""
             html_content += f"""
             <div class="item">
                 <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
-                <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado} {oferta_texto} <span class="descuento">{descuento}</span></span></br>
+                <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado}<span class="oferta">{oferta_texto}</span> <span class="descuento">{descuento}</span></span></br>
                 <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
             </div>
             """
