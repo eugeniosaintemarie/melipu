@@ -48,8 +48,8 @@ def obtener_nombre_y_precio(link):
     nombre_element = soup.find(class_=class_id_nombre)
     precio_container = soup.find("div", class_="ui-pdp-price__second-line")
 
-    if oferta_element:  # Utilizas 'oferta_element' antes de definirlo
-        # Navegar hacia arriba para encontrar el contenedor padre
+    oferta_element = soup.find("span", string="1 pago")  # Definir oferta_element aquí
+    if oferta_element:
         parent_container = oferta_element.find_parent(
             "div", class_="ui-pdp-buy-box-offers__offer-content"
         )
@@ -60,9 +60,7 @@ def obtener_nombre_y_precio(link):
             if monto_element:
                 precio_actual = monto_element.get_text().strip()
                 precio_actual = precio_actual.replace(".", "").replace(",", ".")
-                oferta_element = soup.find(
-                    "span", string="1 pago"
-                )  # 'soup' no está definido aquí
+                oferta_element = soup.find("span", string="1 pago")
             else:
                 precio_actual = None
                 oferta = None
@@ -70,8 +68,7 @@ def obtener_nombre_y_precio(link):
             precio_actual = None
             oferta = None
     else:
-        # Si no se encuentra el monto específico, seguir con la lógica original
-        if precio_container:  # 'precio_container' no está definido aquí
+        if precio_container:
             class_id_precio = "andes-money-amount__fraction"
             precio_element = precio_container.find("span", class_=class_id_precio)
             if precio_element:
@@ -87,18 +84,11 @@ def obtener_nombre_y_precio(link):
 
     descuento_element = precio_container.select_one(
         ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
-    )  # 'precio_container' no está definido aquí
+    )
 
-    nombre_publicacion = (
-        nombre_element.get_text().strip() if nombre_element else None
-    )  # 'nombre_element' no está definido aquí
+    nombre_publicacion = nombre_element.get_text().strip() if nombre_element else None
 
-    return (
-        nombre_publicacion,
-        precio_actual,
-        descuento,
-        oferta,
-    )  # 'return' fuera de la función
+    return nombre_publicacion, precio_actual, descuento_element, oferta
 
 
 def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
@@ -304,6 +294,7 @@ def main():
                     None,
                     enlace,
                     descuento,
+                    oferta,  # Asegurarse de incluir 'oferta' en la tupla aquí
                 )
             )
         else:
@@ -319,6 +310,7 @@ def main():
                     precios_guardados[enlace]["precio_anterior"],
                     enlace,
                     descuento,
+                    oferta,  # Asegurarse de incluir 'oferta' en la tupla aquí
                 )
             )
 
