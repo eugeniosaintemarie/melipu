@@ -50,7 +50,7 @@ def obtener_nombre_y_precio(link):
 
     oferta = None
 
-    oferta_element = soup.find("span", string="1 pago")
+    oferta_element = soup.find(class_="andes-radio__label")
     if oferta_element:
         oferta = "oferta 1 pago"
 
