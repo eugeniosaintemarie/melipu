@@ -48,39 +48,24 @@ def obtener_nombre_y_precio(link):
     nombre_element = soup.find(class_=class_id_nombre)
     precio_container = soup.find("div", class_="ui-pdp-price__second-line")
 
-    oferta_element = soup.find("span", string="1 pago")  # Definir oferta_element aquí
+    oferta = None  # Inicializamos oferta como None en caso de que no se encuentre
+
+    oferta_element = soup.find("span", string="1 pago")
     if oferta_element:
-        parent_container = oferta_element.find_parent(
-            "div", class_="ui-pdp-buy-box-offers__offer-content"
+        oferta = (
+            "1 pago"  # Asignamos el valor "1 pago" a oferta si se encuentra el elemento
         )
-        if parent_container:
-            monto_element = parent_container.find(
-                "span", class_="andes-money-amount__fraction"
-            )
-            if monto_element:
-                precio_actual = monto_element.get_text().strip()
-                precio_actual = precio_actual.replace(".", "").replace(",", ".")
-                oferta_element = soup.find("span", string="1 pago")
-            else:
-                precio_actual = None
-                oferta = None
+
+    if precio_container:
+        class_id_precio = "andes-money-amount__fraction"
+        precio_element = precio_container.find("span", class_=class_id_precio)
+        if precio_element:
+            precio_actual = precio_element.get_text().strip()
+            precio_actual = precio_actual.replace(".", "").replace(",", ".")
         else:
             precio_actual = None
-            oferta = None
     else:
-        if precio_container:
-            class_id_precio = "andes-money-amount__fraction"
-            precio_element = precio_container.find("span", class_=class_id_precio)
-            if precio_element:
-                precio_actual = precio_element.get_text().strip()
-                precio_actual = precio_actual.replace(".", "").replace(",", ".")
-                oferta = None
-            else:
-                precio_actual = None
-                oferta = None
-        else:
-            precio_actual = None
-            oferta = None
+        precio_actual = None
 
     descuento_element = precio_container.select_one(
         ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
@@ -123,7 +108,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             .precio_actual { color: #FFEB3B; }
             .precio_anterior { color: #FF9800; }
             .precio_no_disponible { color: #F44336; }
-            .descuento { color: #4CAF50; font-size: 13px; }
+            .descuento { color: #4CAF50; font-size: 13px !important; }
             .actualizacion { color: #607D8B; font-size: 10px; }
         </style>
     </head>
@@ -302,7 +287,7 @@ def main():
                     None,
                     enlace,
                     descuento_extraido,
-                    oferta,  # Asegurarse de incluir 'oferta' en la tupla aquí
+                    oferta,
                 )
             )
         else:
@@ -318,7 +303,7 @@ def main():
                     precios_guardados[enlace]["precio_anterior"],
                     enlace,
                     descuento_extraido,
-                    oferta,  # Asegurarse de incluir 'oferta' en la tupla aquí
+                    oferta,
                 )
             )
 
