@@ -72,7 +72,11 @@ def obtener_publicacion(link):
     if oferta_element:
         oferta_obtenida = "oferta 1 pago"
 
-    nombre_publicacion = nombre_obtenido.get_text().strip() if nombre_obtenido else None
+    nombre_publicacion = (
+        nombre_obtenido
+        if isinstance(nombre_obtenido, str)
+        else nombre_obtenido.get_text().strip() if nombre_obtenido else None
+    )
 
     return nombre_publicacion, precio_actual, descuento_obtenido, oferta_obtenida
 
