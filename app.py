@@ -94,7 +94,7 @@ def obtener(link):
     return nombre, precio_actual, descuento, oferta
 
 
-def generar_html(resultados, precios_guardados, publicacion_ficticia):
+def generar_html(resultados, precios_guardados, simular):
     html_content = """
     <!DOCTYPE html>
     <html>
@@ -140,12 +140,14 @@ def generar_html(resultados, precios_guardados, publicacion_ficticia):
         oferta,
     ) in resultados:
         precio_nuevo = float(precio_nuevo) if precio_nuevo else None
-        precio_anterior = (
-            float(precio_anterior_str)
-            if precio_anterior_str
-            and precio_anterior_str.replace(".", "").replace(",", "").isdigit()
-            else None
-        )
+        precio_anterior = None
+        if precio_anterior_str:
+            cleaned_price = precio_anterior_str.replace(".", "").replace(",", "")
+            if (
+                cleaned_price.count(".") == 1
+                and cleaned_price.replace(".", "").isdigit()
+            ):
+                precio_anterior = float(cleaned_price)
         precio_nuevo_formateado = (
             f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "-"
         )
