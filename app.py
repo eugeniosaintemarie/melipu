@@ -138,9 +138,10 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             precio_nuevo_str = str(precio_nuevo)
             precio_anterior_str = str(precio_anterior)
         else:
-            nombre_publicacion, precio_nuevo, descuento = obtener_nombre_y_precio(
-                enlace
+            nombre_publicacion, precio_nuevo, precio_anterior, descuento, oferta = (
+                obtener_nombre_y_precio(enlace)
             )
+
             if nombre_publicacion and precio_nuevo:
                 nombre_publicacion = nombre_publicacion[:32] + "..."
                 precio_nuevo_str = str(precio_nuevo)
