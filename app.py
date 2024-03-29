@@ -165,10 +165,11 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
 
             if nombre and precio_nuevo:
                 nombre = nombre[:32] + "..."
-                precio_nuevo_str = str(precio_nuevo).replace(".", "").replace(",", ".")
+                precio_nuevo_str = str(precio_nuevo)
                 precio_anterior_str = (
                     str(precio_anterior).replace(".", "").replace(",", ".")
                     if precio_anterior
+                    and precio_anterior.replace(".", "").replace(",", "").isdigit()
                     else None
                 )
             else:
