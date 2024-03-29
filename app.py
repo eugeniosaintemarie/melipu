@@ -214,7 +214,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             )
             descuento_texto = f"{descuento}" if descuento else ""
             oferta_texto = (
-                " (1 pago)" if oferta else ""
+                f" ({oferta})" if oferta else ""
             )  # Agregamos la información de la oferta aquí
             html_content += f"""
             <div class="item">
