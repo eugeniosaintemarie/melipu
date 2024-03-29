@@ -50,6 +50,16 @@ def obtener_nombre_y_precio(link):
     if precio_container:
         class_id_precio = "andes-money-amount__fraction"
         precio_element = precio_container.find("span", class_=class_id_precio)
+        nuevo_precio_container = precio_container.find(
+            "div",
+            class_="andes-money-amount ui-pdp-price__part andes-money-amount--cents-superscript andes-money-amount--compact",
+        )
+        if nuevo_precio_container:
+            nuevo_precio_element = nuevo_precio_container.find(
+                "span", class_=class_id_precio
+            )
+            if nuevo_precio_element:
+                precio_element = nuevo_precio_element
     else:
         precio_element = None
     descuento_element = precio_container.select_one(
