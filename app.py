@@ -75,25 +75,17 @@ def obtener(link):
     else:
         descuento = None
 
-    # oferta_element = soup.find(class_="andes-radio__label")
-    # if oferta_element:
-    #    oferta = "oferta 1 pago"
-    # else:
-    #    oferta = None
-
     oferta_element = soup.find(
         "li",
-        class_="andes-list__item ui-pdp-buy-box-offers__offer-list-item ui-pdp-buy-box-offers__offer-list-item--NOT-SELECTED andes-list__item--size-medium",
+        class_="andes-list__item.ui-pdp-color--BLACK.ui-pdp-size--MEDIUM",
     )
     if oferta_element:
-        oferta_obtenida = soup.find("div", class_="ui-pdp-price__second-line")
+        oferta_obtenida = oferta_element.find(
+            "span", class_="andes-money-amount__fraction"
+        )
         if oferta_obtenida:
-            oferta = oferta_obtenida.find("span", class_="andes-money-amount__fraction")
-            if oferta:
-                oferta = oferta.get_text().strip()
-                oferta = oferta.replace(".", "").replace(",", ".")
-            else:
-                oferta = None
+            oferta = oferta_obtenida.get_text().strip()
+            oferta = oferta.replace(".", "").replace(",", ".")
         else:
             oferta = None
     else:
@@ -259,9 +251,7 @@ def main():
                 )
             )
 
-    html_content = generar_html(
-        resultados, precios_guardados, publicacion_ficticia
-    )
+    html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
     with open("index.html", "w", encoding="utf-8") as html_file:
         html_file.write(html_content)
 
