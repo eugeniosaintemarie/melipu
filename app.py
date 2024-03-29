@@ -108,7 +108,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             .precio_no_disponible { color: #F44336; }
             .descuento { color: #4CAF50; font-size: 13px !important; }
             .actualizacion { color: #607D8B; font-size: 10px; }
-            .oferta { color: #2196F3; font-size: 13px; } /* Estilo para el texto de la oferta */
         </style>
     </head>
     <body>
@@ -125,9 +124,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             ) = publicacion_ficticia + (None,)
             precio_nuevo_str = str(precio_nuevo)
             precio_anterior_str = str(precio_anterior)
-            oferta_texto = (
-                ""  # Inicializamos la variable oferta_texto como una cadena vacía
-            )
         else:
             (
                 nombre_publicacion,
@@ -147,9 +143,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                     if enlace in precios_guardados
                     else None
                 )
-                oferta_texto = (
-                    f" {oferta}" if oferta else ""
-                )  # Agregamos el texto de la oferta si está presente
             else:
                 continue
         if enlace not in precios_guardados:
@@ -204,11 +197,12 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
             precio_anterior_formateado = (
                 f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
             )
-            descuento = f"{descuento_extraido}" if descuento_extraido else ""
+            descuento_texto = f"{descuento_extraido}" if descuento_extraido else ""
+            oferta_texto = f" ({oferta})" if oferta else ""
             html_content += f"""
             <div class="item">
                 <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
-                <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado}<span class="oferta">{oferta_texto}</span> <span class="descuento">{descuento}</span></span></br>
+                <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado} {oferta_texto} <span class="descuento">{descuento_texto}</span></span></br>
                 <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
             </div>
             """
@@ -229,96 +223,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         </html>
     """
     return html_content
-
-
-def main():
-    mostrar_publicacion_ficticia = False
-    publicacion_ficticia = None
-    if mostrar_publicacion_ficticia:
-        publicacion_ficticia = simular_publicacion_ficticia()
-
-    enlaces = []
-    precios_guardados = {}
-    resultados = []
-    enlaces_procesados = set()
-
-    with open("links.txt", "r") as file:
-        enlaces = [line.strip() for line in file]
-
-    if publicacion_ficticia:
-        nombre_publicacion, precio_nuevo, precio_anterior, descuento_extraido = (
-            publicacion_ficticia
-        )
-        enlace_ficticio = "https://google.com"
-        precio_actual_str = str(precio_nuevo)
-        precio_anterior_str = str(precio_anterior)
-        enlaces.append(enlace_ficticio)
-
-    for enlace in enlaces:
-        if enlace in enlaces_procesados:
-            continue
-        enlaces_procesados.add(enlace)
-
-        if enlace == "https://google.com":
-            nombre_publicacion, precio_nuevo, precio_anterior, descuento_extraido = (
-                publicacion_ficticia
-            )
-            precio_nuevo_str = str(precio_nuevo)
-            precio_anterior_str = str(precio_anterior)
-        else:
-            nombre_publicacion, precio_nuevo, descuento_extraido, oferta = (
-                obtener_nombre_y_precio(enlace)
-            )
-
-            if nombre_publicacion and precio_nuevo:
-                nombre_publicacion = nombre_publicacion[:32] + "..."
-                precio_nuevo_str = str(precio_nuevo)
-                precio_anterior_str = (
-                    str(precios_guardados[enlace]["precio_anterior"])
-                    if enlace in precios_guardados
-                    else None
-                )
-            else:
-                continue
-
-        if enlace not in precios_guardados:
-            precios_guardados[enlace] = {
-                "precio_actual": precio_nuevo_str,
-                "precio_anterior": None,
-                "descuento_extraido": descuento_extraido,
-            }
-            resultados.append(
-                (
-                    nombre_publicacion,
-                    precio_nuevo_str,
-                    None,
-                    enlace,
-                    descuento_extraido,
-                    oferta,
-                )
-            )
-        else:
-            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
-                "precio_actual"
-            ]
-            precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
-            precios_guardados[enlace]["descuento_extraido"] = descuento_extraido
-            resultados.append(
-                (
-                    nombre_publicacion,
-                    precio_nuevo_str,
-                    precios_guardados[enlace]["precio_anterior"],
-                    enlace,
-                    descuento_extraido,
-                    oferta,
-                )
-            )
-
-    html_content = generar_html(
-        resultados, enlaces, precios_guardados, publicacion_ficticia
-    )
-    with open("index.html", "w", encoding="utf-8") as html_file:
-        html_file.write(html_content)
 
 
 if __name__ == "__main__":
