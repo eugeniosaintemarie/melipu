@@ -48,6 +48,7 @@ def obtener_publicacion(link):
     precio_obtenido = soup.find("div", class_="ui-pdp-price__second-line")
 
     oferta_obtenida = None
+    descuento_obtenido = None
 
     oferta_element = soup.find(class_="andes-radio__label")
     if oferta_element:
@@ -62,14 +63,12 @@ def obtener_publicacion(link):
             precio_actual = precio_actual.replace(".", "").replace(",", ".")
         else:
             precio_actual = None
-    else:
-        precio_actual = None
 
-    descuento_obtenido = precio_obtenido.select_one(
-        ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
-    )
-    if descuento_container:
-        descuento_obtenido = descuento_container.get_text().strip()
+        descuento_container = precio_obtenido.select_one(
+            ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
+        )
+        if descuento_container:
+            descuento_obtenido = descuento_container.get_text().strip()
 
     nombre_publicacion = nombre_obtenido.get_text().strip() if nombre_obtenido else None
 
