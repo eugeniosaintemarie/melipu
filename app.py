@@ -48,17 +48,26 @@ def obtener_nombre_y_precio(link):
     nombre_element = soup.find(class_=class_id_nombre)
     precio_container = soup.find("div", class_="ui-pdp-price__second-line")
 
+    # Intentar encontrar el monto específico primero
     pago_element = soup.find("span", text="1 pago")
     if pago_element:
-        monto_element = pago_element.find_parent(
+        # Navegar hacia arriba para encontrar el contenedor padre
+        parent_container = pago_element.find_parent(
             "div", class_="ui-pdp-buy-box-offers__offer-content"
-        ).find("span", class_="andes-money-amount__fraction")
-        if monto_element:
-            precio_actual = monto_element.get_text().strip()
-            precio_actual = precio_actual.replace(".", "").replace(",", ".")
+        )
+        if parent_container:
+            monto_element = parent_container.find(
+                "span", class_="andes-money-amount__fraction"
+            )
+            if monto_element:
+                precio_actual = monto_element.get_text().strip()
+                precio_actual = precio_actual.replace(".", "").replace(",", ".")
+            else:
+                precio_actual = None
         else:
             precio_actual = None
     else:
+        # Si no se encuentra el monto específico, seguir con la lógica original
         if precio_container:
             class_id_precio = "andes-money-amount__fraction"
             precio_element = precio_container.find("span", class_=class_id_precio)
