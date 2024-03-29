@@ -43,7 +43,6 @@ def simular_publicacion_ficticia():
 
 def obtener_publicacion(link):
     response = requests.get(link)
-
     soup = BeautifulSoup(response.text, "html.parser")
 
     nombre_element = soup.find(class_="ui-pdp-title")
@@ -66,13 +65,16 @@ def obtener_publicacion(link):
         else:
             precio_actual = None
 
-        descuento_element = descuento_element.select_one(
+        descuento_element = precio_element.select_one(
             ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
         )
         if descuento_element:
             descuento_publicacion = descuento_element.get_text().strip()
         else:
             descuento_publicacion = None
+    else:
+        precio_actual = None
+        descuento_publicacion = None
 
     oferta_element = soup.find(class_="andes-radio__label")
     if oferta_element:
