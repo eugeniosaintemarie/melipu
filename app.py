@@ -47,29 +47,36 @@ def obtener_nombre_y_precio(link):
     class_id_nombre = "ui-pdp-title"
     nombre_element = soup.find(class_=class_id_nombre)
     precio_container = soup.find("div", class_="ui-pdp-price__second-line")
-    if precio_container:
-        class_id_precio = "andes-money-amount__fraction"
-        precio_element = precio_container.find("span", class_=class_id_precio)
-        nuevo_precio_element = soup.select_one(
-            ".andes-list.ui-pdp-buy-box-offers__offer-list.andes-list--default.andes-list--selectable.andes-list-with-dividers .andes-money-amount.ui-pdp-price__part.andes-money-amount--cents-superscript.andes-money-amount--compact .andes-money-amount__fraction"
-        )
-        if nuevo_precio_element:
-            precio_element = nuevo_precio_element
+
+    pago_element = soup.find("span", text="1 pago")
+    if pago_element:
+        monto_element = pago_element.find_parent(
+            "div", class_="ui-pdp-buy-box-offers__offer-content"
+        ).find("span", class_="andes-money-amount__fraction")
+        if monto_element:
+            precio_actual = monto_element.get_text().strip()
+            precio_actual = precio_actual.replace(".", "").replace(",", ".")
+        else:
+            precio_actual = None
     else:
-        precio_element = None
+        if precio_container:
+            class_id_precio = "andes-money-amount__fraction"
+            precio_element = precio_container.find("span", class_=class_id_precio)
+            if precio_element:
+                precio_actual = precio_element.get_text().strip()
+                precio_actual = precio_actual.replace(".", "").replace(",", ".")
+            else:
+                precio_actual = None
+        else:
+            precio_actual = None
+
     descuento_element = precio_container.select_one(
         ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
     )
     descuento = descuento_element.get_text().strip() if descuento_element else None
-    if precio_element:
-        precio_actual = precio_element.get_text().strip()
-        precio_actual = precio_actual.replace(".", "").replace(",", ".")
-        nombre_publicacion = (
-            nombre_element.get_text().strip() if nombre_element else None
-        )
-        return nombre_publicacion, precio_actual, descuento
-    else:
-        return None, None, None
+
+    nombre_publicacion = nombre_element.get_text().strip() if nombre_element else None
+    return nombre_publicacion, precio_actual, descuento
 
 
 def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
