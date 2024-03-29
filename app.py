@@ -134,14 +134,21 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         if enlace == "https://google.com":
             nombre_publicacion, precio_nuevo, precio_anterior, descuento = (
                 publicacion_ficticia
+                + (None,)  # Añadir None para manejar el desempaquetado
             )
             precio_nuevo_str = str(precio_nuevo)
             precio_anterior_str = str(precio_anterior)
             oferta = None  # Establecer oferta como None para mantener consistencia
         else:
-            nombre_publicacion, precio_nuevo, precio_anterior, descuento, oferta = (
-                obtener_nombre_y_precio(enlace)
-            )
+            (
+                nombre_publicacion,
+                precio_nuevo,
+                precio_anterior,
+                descuento,
+                oferta,
+            ) = obtener_nombre_y_precio(enlace) + (None,) * (
+                5 - len(obtener_nombre_y_precio(enlace))
+            )  # Añadir None para manejar el desempaquetado
 
             if nombre_publicacion and precio_nuevo:
                 nombre_publicacion = nombre_publicacion[:32] + "..."
@@ -153,7 +160,6 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                 )
             else:
                 continue
-
         if enlace not in precios_guardados:
             precios_guardados[enlace] = {
                 "precio_actual": precio_nuevo_str,
@@ -194,7 +200,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         precio_anterior,
         enlace,
         descuento,
-        oferta,  # Asegúrate de incluir 'oferta' en la tupla que se pasa aquí
+        oferta,
     ) in resultados:
         if enlace not in publicaciones_agregadas:
             publicaciones_agregadas.add(enlace)
@@ -207,9 +213,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                 f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
             )
             descuento_texto = f"{descuento}" if descuento else ""
-            oferta_texto = (
-                f" ({oferta})" if oferta else ""
-            )  # Agregamos la información de la oferta aquí
+            oferta_texto = f" ({oferta})" if oferta else ""
             html_content += f"""
             <div class="item">
                 <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
