@@ -43,34 +43,11 @@ def simular_publicacion_ficticia():
 
 def obtener_publicacion(link):
     response = requests.get(link)
+
     soup = BeautifulSoup(response.text, "html.parser")
-    nombre_obtenido = soup.find(class_="ui-pdp-title")
-    if nombre_obtenido:
-        nombre_obtenido = nombre_obtenido.get_text().strip()
-    precio_obtenido = soup.find("div", class_="ui-pdp-price__second-line")
 
-    descuento_obtenido = None
-    oferta_obtenida = None
-
-    if precio_obtenido:
-        precio_element = precio_obtenido.find(
-            "span", class_="andes-money-amount__fraction"
-        )
-        if precio_element:
-            precio_actual = precio_element.get_text().strip()
-            precio_actual = precio_actual.replace(".", "").replace(",", ".")
-        else:
-            precio_actual = None
-
-        descuento_obtenido = precio_obtenido.select_one(
-            ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
-        )
-        if descuento_obtenido:
-            descuento_obtenido = descuento_obtenido.get_text().strip()
-
-    oferta_element = soup.find(class_="andes-radio__label")
-    if oferta_element:
-        oferta_obtenida = "oferta 1 pago"
+    nombre_element = soup.find(class_="ui-pdp-title")
+    nombre_obtenido = nombre_element.get_text().strip()
 
     nombre_publicacion = (
         nombre_obtenido
@@ -78,7 +55,32 @@ def obtener_publicacion(link):
         else nombre_obtenido.get_text().strip() if nombre_obtenido else None
     )
 
-    return nombre_publicacion, precio_actual, descuento_obtenido, oferta_obtenida
+    precio_element = soup.find("div", class_="ui-pdp-price__second-line")
+    if precio_element:
+        precio_obtenido = precio_element.find(
+            "span", class_="andes-money-amount__fraction"
+        )
+        if precio_obtenido:
+            precio_actual = precio_obtenido.get_text().strip()
+            precio_actual = precio_actual.replace(".", "").replace(",", ".")
+        else:
+            precio_actual = None
+
+        descuento_element = descuento_element.select_one(
+            ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
+        )
+        if descuento_element:
+            descuento_publicacion = descuento_element.get_text().strip()
+        else:
+            descuento_publicacion = None
+
+    oferta_element = soup.find(class_="andes-radio__label")
+    if oferta_element:
+        oferta_publicacion = "oferta 1 pago"
+    else:
+        oferta_publicacion = None
+
+    return nombre_publicacion, precio_actual, descuento_publicacion, oferta_publicacion
 
 
 def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
