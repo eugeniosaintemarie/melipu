@@ -48,8 +48,6 @@ def obtener_nombre_y_precio(link):
     nombre_element = soup.find(class_=class_id_nombre)
     precio_container = soup.find("div", class_="ui-pdp-price__second-line")
 
-    # Buscar el elemento que contiene el texto "1 pago" dentro de la lista de ofertas
-    oferta_element = soup.find("span", text="1 pago")
     if oferta_element:
         # Navegar hacia arriba para encontrar el contenedor padre
         parent_container = oferta_element.find_parent(
