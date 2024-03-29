@@ -62,7 +62,7 @@ def obtener_nombre_y_precio(link):
             if monto_element:
                 precio_actual = monto_element.get_text().strip()
                 precio_actual = precio_actual.replace(".", "").replace(",", ".")
-                oferta = "1 pago"
+                oferta_element = soup.find("span", string="1 pago")
             else:
                 precio_actual = None
                 oferta = None
