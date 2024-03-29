@@ -45,14 +45,12 @@ def obtener_publicacion(link):
     response = requests.get(link)
     soup = BeautifulSoup(response.text, "html.parser")
     nombre_obtenido = soup.find(class_="ui-pdp-title")
+    if nombre_obtenido:
+        nombre_obtenido = nombre_obtenido.get_text().strip()
     precio_obtenido = soup.find("div", class_="ui-pdp-price__second-line")
 
-    oferta_obtenida = None
     descuento_obtenido = None
-
-    oferta_element = soup.find(class_="andes-radio__label")
-    if oferta_element:
-        oferta_obtenida = "oferta 1 pago"
+    oferta_obtenida = None
 
     if precio_obtenido:
         precio_element = precio_obtenido.find(
@@ -64,11 +62,15 @@ def obtener_publicacion(link):
         else:
             precio_actual = None
 
-        descuento_container = precio_obtenido.select_one(
+        descuento_obtenido = precio_obtenido.select_one(
             ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
         )
-        if descuento_container:
-            descuento_obtenido = descuento_container.get_text().strip()
+        if descuento_obtenido:
+            descuento_obtenido = descuento_obtenido.get_text().strip()
+
+    oferta_element = soup.find(class_="andes-radio__label")
+    if oferta_element:
+        oferta_obtenida = "oferta 1 pago"
 
     nombre_publicacion = nombre_obtenido.get_text().strip() if nombre_obtenido else None
 
