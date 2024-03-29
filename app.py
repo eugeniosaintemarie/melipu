@@ -67,9 +67,8 @@ def obtener(link):
     else:
         precio_actual = None
 
-    descuento_element = soup.find(
-        "span",
-        class_="ui-pdp-price__second-line__label ui-pdp-color--GREEN ui-pdp-size--MEDIUM .andes-money-amount__discount",
+    descuento_element = precio_element.select_one(
+        ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
     )
     if descuento_element:
         descuento = descuento_element.get_text().strip()
