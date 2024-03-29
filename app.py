@@ -68,6 +68,8 @@ def obtener_publicacion(link):
     descuento_obtenido = precio_obtenido.select_one(
         ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
     )
+    if descuento_container:
+        descuento_obtenido = descuento_container.get_text().strip()
 
     nombre_publicacion = nombre_obtenido.get_text().strip() if nombre_obtenido else None
 
