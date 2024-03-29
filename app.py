@@ -260,7 +260,7 @@ def main():
             )
 
     html_content = generar_html(
-        resultados, enlaces, precios_guardados, publicacion_ficticia
+        resultados, precios_guardados, publicacion_ficticia
     )
     with open("index.html", "w", encoding="utf-8") as html_file:
         html_file.write(html_content)
