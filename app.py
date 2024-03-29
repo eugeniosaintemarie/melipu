@@ -48,11 +48,11 @@ def obtener_nombre_y_precio(link):
     nombre_element = soup.find(class_=class_id_nombre)
     precio_container = soup.find("div", class_="ui-pdp-price__second-line")
 
-    # Intentar encontrar el monto específico primero
-    pago_element = soup.find("span", text="1 pago")
-    if pago_element:
+    # Buscar el elemento que contiene el texto "1 pago" dentro de la lista de ofertas
+    oferta_element = soup.find("span", text="1 pago")
+    if oferta_element:
         # Navegar hacia arriba para encontrar el contenedor padre
-        parent_container = pago_element.find_parent(
+        parent_container = oferta_element.find_parent(
             "div", class_="ui-pdp-buy-box-offers__offer-content"
         )
         if parent_container:
@@ -62,10 +62,13 @@ def obtener_nombre_y_precio(link):
             if monto_element:
                 precio_actual = monto_element.get_text().strip()
                 precio_actual = precio_actual.replace(".", "").replace(",", ".")
+                oferta = "1 pago"
             else:
                 precio_actual = None
+                oferta = None
         else:
             precio_actual = None
+            oferta = None
     else:
         # Si no se encuentra el monto específico, seguir con la lógica original
         if precio_container:
@@ -74,10 +77,13 @@ def obtener_nombre_y_precio(link):
             if precio_element:
                 precio_actual = precio_element.get_text().strip()
                 precio_actual = precio_actual.replace(".", "").replace(",", ".")
+                oferta = None
             else:
                 precio_actual = None
+                oferta = None
         else:
             precio_actual = None
+            oferta = None
 
     descuento_element = precio_container.select_one(
         ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
@@ -85,7 +91,15 @@ def obtener_nombre_y_precio(link):
     descuento = descuento_element.get_text().strip() if descuento_element else None
 
     nombre_publicacion = nombre_element.get_text().strip() if nombre_element else None
-    return nombre_publicacion, precio_actual, descuento
+    return nombre_publicacion, precio_actual, descuento, oferta
+
+    descuento_element = precio_container.select_one(
+        ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
+    )
+    descuento = descuento_element.get_text().strip() if descuento_element else None
+
+    nombre_publicacion = nombre_element.get_text().strip() if nombre_element else None
+    return nombre_publicacion, precio_actual, descuento, oferta
 
 
 def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
@@ -186,6 +200,7 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
         precio_anterior,
         enlace,
         descuento,
+        oferta,  # Asegúrate de incluir 'oferta' en la tupla que se pasa aquí
     ) in resultados:
         if enlace not in publicaciones_agregadas:
             publicaciones_agregadas.add(enlace)
@@ -198,10 +213,13 @@ def generar_html(resultados, enlaces, precios_guardados, publicacion_ficticia):
                 f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
             )
             descuento_texto = f"{descuento}" if descuento else ""
+            oferta_texto = (
+                " (1 pago)" if oferta else ""
+            )  # Agregamos la información de la oferta aquí
             html_content += f"""
             <div class="item">
                 <a href="{enlace}" class="nombre">{nombre_publicacion}</a></br>
-                <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado} <span class="descuento">{descuento_texto}</span></span></br>
+                <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado}{oferta_texto} <span class="descuento">{descuento_texto}</span></span></br>
                 <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
             </div>
             """
