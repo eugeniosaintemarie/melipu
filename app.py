@@ -37,7 +37,7 @@ def enviar_notificacion(titulo, cuerpo, tokens):
     response = messaging.send_multicast(message)
 
 
-def simular_ficticia():
+def simular():
     return "Producto de prueba", 100000, 150000, "10%"
 
 
@@ -67,8 +67,9 @@ def obtener(link):
     else:
         precio_actual = None
 
-    descuento_element = precio_element.select_one(
-        ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
+    descuento_element = soup.find(
+        "span",
+        class_="ui-pdp-price__second-line__label ui-pdp-color--GREEN ui-pdp-size--MEDIUM .andes-money-amount__discount",
     )
     if descuento_element:
         descuento = descuento_element.get_text().strip()
@@ -185,7 +186,7 @@ def main():
     mostrar_ficticia = False
     publicacion_ficticia = None
     if mostrar_ficticia:
-        publicacion_ficticia = simular_ficticia()
+        publicacion_ficticia = simular()
 
     enlaces = []
     precios_guardados = {}
