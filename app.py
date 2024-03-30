@@ -76,15 +76,16 @@ def obtener(link):
 
     oferta_element = soup.find(
         "li",
-        class_="andes-list__item.ui-pdp-color--BLACK.ui-pdp-size--MEDIUM",
+        class_="andes-list__item ui-pdp-buy-box-offers__offer-list-item ui-pdp-buy-box-offers__offer-list-item--NOT-SELECTED andes-list__item--size-medium",
     )
     if oferta_element:
         oferta_obtenida = oferta_element.find(
             "span", class_="andes-money-amount__fraction"
         )
         if oferta_obtenida:
-            oferta = oferta_obtenida.get_text().strip()
-            oferta = oferta.replace(".", "").replace(",", ".")
+            oferta = (
+                oferta_obtenida.get_text().strip().replace(".", "").replace(",", ".")
+            )
         else:
             oferta = None
     else:
@@ -169,10 +170,10 @@ def generar_html(resultados, precios_guardados, simular):
         precio_nuevo = float(precio_nuevo) if precio_nuevo else None
         precio_anterior = float(precio_anterior) if precio_anterior else None
         precio_nuevo_formateado = (
-            f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "-"
+            f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else ""
         )
         precio_anterior_formateado = (
-            f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
+            f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else ""
         )
         descuento = f"{descuento}" if descuento else ""
         oferta = f" ({oferta})" if oferta else ""
