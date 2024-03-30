@@ -74,12 +74,21 @@ def obtener(link):
     else:
         descuento = None
 
-    oferta_element = soup.find("span", class_="andes-money-amount__fraction")
-
+    oferta_element = soup.find(
+        "li", class_="andes-list__item ui-pdp-buy-box-offers__offer-list-item"
+    )
     if oferta_element:
-        oferta = 1 #oferta_element.get_text().strip().replace(".", "").replace(",", ".")
+        oferta_obtenida = oferta_element.find(
+            "span", class_="andes-money-amount__fraction"
+        )
+        if oferta_obtenida:
+            oferta = (
+                oferta_obtenida.get_text().strip().replace(".", "").replace(",", ".")
+            )
+        else:
+            oferta = None
     else:
-        oferta = 1 #None
+        oferta = None
 
     return nombre, precio_actual, descuento, oferta
 
@@ -166,7 +175,7 @@ def generar_html(resultados, precios_guardados, simular):
             f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else ""
         )
         descuento = f"{descuento}" if descuento else ""
-        oferta = f" ({oferta})" if oferta else ""
+        oferta = f" {oferta}" if oferta else ""
 
         html_content += f"""
         <div class="item">
