@@ -130,7 +130,13 @@ def generar_html(resultados, precios_guardados, simular):
     <br/>
     """
 
-    for enlace in enlaces:
+    for enlace, (
+        nombre,
+        precio_nuevo,
+        precio_anterior,
+        descuento,
+        oferta,
+    ) in resultados.items():
         if enlace == "https://google.com":
             nombre_publicacion, precio_actual, descuento, oferta = simular
             precio_nuevo_str = str(precio_nuevo)
@@ -147,59 +153,27 @@ def generar_html(resultados, precios_guardados, simular):
                 )
             else:
                 continue
-    if enlace not in precios_guardados:
-        precios_guardados[enlace] = {
-            "precio_actual": precio_nuevo_str,
-            "precio_anterior": None,
-            "descuento": descuento,
-            "oferta": oferta,
-        }
-        resultados.append(
-            (
-                nombre_publicacion,
-                precio_nuevo_str,
-                None,
-                enlace,
-                descuento,
-                oferta,
-            )
-        )
-    else:
-        precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
-            "precio_actual"
-        ]
-        precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
-        precios_guardados[enlace]["descuento"] = descuento
-        resultados.append(
-            (
-                nombre_publicacion,
-                precio_nuevo_str,
-                precios_guardados[enlace]["precio_anterior"],
-                enlace,
-                descuento,
-                oferta,
-            )
-        )
+        if enlace not in precios_guardados:
+            precios_guardados[enlace] = {
+                "precio_actual": precio_nuevo_str,
+                "precio_anterior": None,
+                "descuento": descuento,
+                "oferta": oferta,
+            }
+        else:
+            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
+                "precio_actual"
+            ]
+            precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
 
-    publicaciones_agregadas = set()
-    for (
-        nombre_publicacion,
-        precio_nuevo,
-        precio_anterior,
-        enlace,
-        descuento,
-        oferta,
-    ) in resultados:
-        if enlace not in publicaciones_agregadas:
-            publicaciones_agregadas.add(enlace)
-            precio_nuevo = float(precio_nuevo) if precio_nuevo else None
-            precio_anterior = float(precio_anterior) if precio_anterior else None
-            precio_nuevo_formateado = (
-                f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "-"
-            )
-            precio_anterior_formateado = (
-                f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
-            )
+        precio_nuevo = float(precio_nuevo) if precio_nuevo else None
+        precio_anterior = float(precio_anterior) if precio_anterior else None
+        precio_nuevo_formateado = (
+            f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else "-"
+        )
+        precio_anterior_formateado = (
+            f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else "-"
+        )
         descuento = f"{descuento}" if descuento else ""
         oferta = f" ({oferta})" if oferta else ""
 
@@ -237,7 +211,7 @@ def main():
 
     enlaces = []
     precios_guardados = {}
-    resultados = []
+    resultados = {}
     enlaces_procesados = set()
 
     with open("links.txt", "r") as file:
@@ -277,16 +251,14 @@ def main():
             precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
                 "precio_actual"
             ]
-        precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
-        resultados.append(
-            (
-                nombre,
-                precio_nuevo_str,
-                precios_guardados[enlace]["precio_anterior"],
-                enlace,
-                descuento,
-                oferta,
-            )
+            precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
+
+        resultados[enlace] = (
+            nombre,
+            precio_nuevo_str,
+            precios_guardados[enlace]["precio_anterior"],
+            descuento,
+            oferta,
         )
 
     html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
