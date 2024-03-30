@@ -77,9 +77,9 @@ def obtener(link):
     oferta_element = soup.find("span", class_="andes-money-amount__fraction")
 
     if oferta_element:
-        oferta = oferta_element.get_text().strip().replace(".", "").replace(",", ".")
+        oferta = 1 #oferta_element.get_text().strip().replace(".", "").replace(",", ".")
     else:
-        oferta = None
+        oferta = 1 #None
 
     return nombre, precio_actual, descuento, oferta
 
