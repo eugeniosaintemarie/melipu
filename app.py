@@ -80,11 +80,11 @@ def obtener(link):
     )
     if contenedor_principal:
         contenedor_row = contenedor_principal.find(
-            "div", class_="ui-pdp-container__row"
+            "div", class_="ui-pdp--sticky-wrapper ui-pdp--sticky-wrapper-right"
         )
         if contenedor_row:
             contenedor_offers = contenedor_row.find(
-                "div", class_="ui-pdp-buybox-offers-wrapper"
+                "div", class_="ui-pdp-container__row"
             )
             if contenedor_offers:
                 oferta_element = contenedor_offers.find(
