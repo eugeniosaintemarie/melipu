@@ -74,12 +74,11 @@ def obtener(link):
     else:
         descuento = None
 
-    montos = soup.find_all("span", class_="andes-money-amount__fraction")
-    oferta = None
-    for monto in montos:
-        if monto.find_previous_sibling("span", text="1 pago"):
-            oferta = monto.get_text().strip().replace(".", "").replace(",", ".")
-            break
+    oferta_element = soup.find("span", attrs={"data-testid": "price-part"})
+    if oferta_element:
+        oferta = oferta_element.get_text().strip().replace(".", "").replace(",", ".")
+    else:
+        oferta = None
 
     return nombre, precio_actual, descuento, oferta
 
