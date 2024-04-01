@@ -91,6 +91,11 @@ def obtener(link):
     else:
         oferta = None
 
+        nombre = nombre if nombre else "Nombre no disponible"
+        precio_actual = precio_actual if precio_actual else "Precio no disponible"
+        descuento = descuento if descuento else " "
+        oferta = oferta if oferta else " "
+
         return nombre, precio_actual, descuento, oferta
 
 
@@ -184,7 +189,7 @@ def generar_html(resultados, precios_guardados, simular):
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre}</a></br>
-            <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span><span class="oferta"> {oferta if oferta is not None else ' '}</span></br>
+            <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span><span class="oferta"> {oferta}</span></br>
             <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
         </div>
         """
