@@ -74,11 +74,33 @@ def obtener(link):
     else:
         descuento = None
 
-    contenedor_principal = soup.find("div", class_="ui-pdp-container__col col-1 ui-pdp-container--column-right mt-16 pr-16")
+    contenedor_principal = soup.find(
+        "div",
+        class_="ui-pdp-container__col col-1 ui-pdp-container--column-right mt-16 pr-16",
+    )
     if contenedor_principal:
-        oferta_element = contenedor_principal.find("span", attrs={"data-testid": "price-part"})
-        if oferta_element:
-            oferta = oferta_element.get_text().strip().replace(".", "").replace(",", ".")
+        contenedor_row = contenedor_principal.find(
+            "div", class_="ui-pdp-container__row"
+        )
+        if contenedor_row:
+            contenedor_offers = contenedor_row.find(
+                "div", class_="ui-pdp-buybox-offers-wrapper"
+            )
+            if contenedor_offers:
+                oferta_element = contenedor_offers.find(
+                    "span", attrs={"data-testid": "price-part"}
+                )
+                if oferta_element:
+                    oferta = (
+                        oferta_element.get_text()
+                        .strip()
+                        .replace(".", "")
+                        .replace(",", ".")
+                    )
+                else:
+                    oferta = None
+            else:
+                oferta = None
         else:
             oferta = None
     else:
