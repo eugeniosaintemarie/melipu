@@ -74,13 +74,24 @@ def obtener(link):
     else:
         descuento = None
 
-    oferta_element = soup.find("span", attrs={"data-testid": "price-part"})
+    oferta_element = soup.find(
+        "span",
+        class_="andes-money-amount ui-pdp-price__part andes-money-amount--cents-superscript andes-money-amount--compact",
+    )
     if oferta_element:
-        oferta = oferta_element.get_text().strip().replace(".", "").replace(",", ".")
+        oferta_obtenida = oferta_element.find(
+            "span", class_="andes-money-amount__fraction"
+        )
+        if oferta_obtenida:
+            oferta = (
+                oferta_obtenida.get_text().strip().replace(".", "").replace(",", ".")
+            )
+        else:
+            oferta = None
     else:
         oferta = None
 
-    return nombre, precio_actual, descuento, oferta
+        return nombre, precio_actual, descuento, oferta
 
 
 def generar_html(resultados, precios_guardados, simular):
@@ -114,8 +125,9 @@ def generar_html(resultados, precios_guardados, simular):
             .precio_actual { color: #FFEB3B; }
             .precio_anterior { color: #FF9800; }
             .precio_no_disponible { color: #F44336; }
-            .descuento { color: #4CAF50; font-size: 12px !important; }
-            .actualizacion { color: #607D8B; font-size: 10px; }
+            .descuento { color: #4CAF50; font-size: 12px; }
+            .oferta { color: #FFC107; }
+            .actualizacion { color: #607D8B; align-text: right; font-size: 10px; }
         </style>
     </head>
     <body>
@@ -172,7 +184,7 @@ def generar_html(resultados, precios_guardados, simular):
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre}</a></br>
-            <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado} <span class="descuento">{descuento}</span> {oferta}</span></br>
+            <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span><span class="oferta"> {oferta}</span></br>
             <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
         </div>
         """
