@@ -76,7 +76,7 @@ def obtener(link):
 
     contenedor_principal = soup.find(
         "div",
-        class_="ui-pdp-container__row",
+        class_="ui-pdp--sticky-wrapper ui-pdp--sticky-wrapper-right",
     )
     if contenedor_principal:
         oferta_element = contenedor_principal.find(
