@@ -76,12 +76,12 @@ def obtener(link):
 
     contenedor_principal = soup.find(
         "div",
-        class_="ui-pdp--sticky-wrapper ui-pdp--sticky-wrapper-right",
+        class_="ui-pdp-container__col col-1 ui-pdp-container--column-right mt-16 pr-16",
     )
     if contenedor_principal:
         contenedor_row = contenedor_principal.find_parent(
             "div",
-            class_="ui-pdp-container__col col-1 ui-pdp-container--column-right mt-16 pr-16",
+            class_="ui-pdp--sticky-wrapper ui-pdp--sticky-wrapper-right",
         )
         if contenedor_row:
             contenedor_form = contenedor_row.find_parent(
@@ -89,7 +89,7 @@ def obtener(link):
             )
             if contenedor_form:
                 contenedor_div = contenedor_form.find(
-                    "div", class_="andes-money-amount__fraction"
+                    "div", class_="ui-pdp-container__row"
                 )
                 if contenedor_div:
                     oferta_element = contenedor_div.find(
