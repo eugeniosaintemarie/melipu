@@ -85,7 +85,7 @@ def obtener(link):
         )
         if contenedor_row:
             contenedor_form = contenedor_row.find_parent(
-                "form", class_="ui-pdp--sticky-wrapper ui-pdp--sticky-wrapper-right"
+                "div", class_="ui-pdp-container__row"
             )
             if contenedor_form:
                 contenedor_div = contenedor_form.find(
@@ -96,12 +96,7 @@ def obtener(link):
                         "span", attrs={"data-testid": "price-part"}
                     )
                     if oferta_element:
-                        oferta = (
-                            oferta_element.get_text()
-                            .strip()
-                            .replace(".", "")
-                            .replace(",", ".")
-                        )
+                        oferta = oferta_element.get_text().strip().replace(",", ".")
                     else:
                         oferta = None
                 else:
