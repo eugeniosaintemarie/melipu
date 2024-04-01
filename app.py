@@ -74,27 +74,26 @@ def obtener(link):
     else:
         descuento = None
 
-    oferta_element = soup.find(
-        "span",
-        class_="andes-money-amount ui-pdp-price__part andes-money-amount--cents-superscript andes-money-amount--compact",
-    )
-    if oferta_element:
-        oferta_obtenida = oferta_element.find(
-            "span", class_="andes-money-amount__fraction"
-        )
-        if oferta_obtenida:
-            oferta = (
-                oferta_obtenida.get_text().strip().replace(".", "").replace(",", ".")
+    pago_element = soup.find(text="1 pago")
+    if pago_element and pago_element.find_next_sibling(
+        "span", class_="andes-money-amount__fraction"
+    ):
+        oferta = (
+            pago_element.find_next_sibling(
+                "span", class_="andes-money-amount__fraction"
             )
-        else:
-            oferta = None
+            .get_text()
+            .strip()
+            .replace(".", "")
+            .replace(",", ".")
+        )
     else:
         oferta = None
 
-        nombre = nombre if nombre else "Nombre no disponible"
-        precio_actual = precio_actual if precio_actual else "Precio no disponible"
-        descuento = descuento if descuento else " "
-        oferta = oferta if oferta else " "
+    nombre = nombre if nombre else "Nombre no disponible"
+    precio_actual = precio_actual if precio_actual else "Precio no disponible"
+    descuento = descuento if descuento else " "
+    oferta = oferta if oferta else " "
 
     return nombre, precio_actual, descuento, oferta
 
