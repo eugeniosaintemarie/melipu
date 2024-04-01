@@ -79,40 +79,9 @@ def obtener(link):
         class_="ui-pdp-container__col col-1 ui-pdp-container--column-right mt-16 pr-16",
     )
     if contenedor_principal:
-        contenedor_sticky = contenedor_principal.find(
-            "div", class_="ui-pdp--sticky-wrapper"
-        )
-        if contenedor_sticky:
-            contenedor_row = contenedor_sticky.find(
-                "div", class_="ui-pdp-container__row"
-            )
-            if contenedor_row:
-                formulario = contenedor_row.find(
-                    "form", class_="ui-pdp-buybox-offers-wrapper", id="buybox-form"
-                )
-                if formulario:
-                    contenedor_desktop = formulario.find(
-                        "div", class_="ui-pdp-buy-box-offers__desktop"
-                    )
-                    if contenedor_desktop:
-                        oferta_element = contenedor_desktop.find(
-                            "span", attrs={"data-testid": "price-part"}
-                        )
-                        if oferta_element:
-                            oferta = (
-                                oferta_element.get_text()
-                                .strip()
-                                .replace(".", "")
-                                .replace(",", ".")
-                            )
-                        else:
-                            oferta = None
-                    else:
-                        oferta = None
-                else:
-                    oferta = None
-            else:
-                oferta = None
+        oferta_element = contenedor_principal.find("span", attrs={"data-testid": "price-part"})
+        if oferta_element:
+            oferta = oferta_element.get_text().strip().replace(".", "").replace(",", ".")
         else:
             oferta = None
     else:
