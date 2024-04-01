@@ -96,7 +96,7 @@ def obtener(link):
         descuento = descuento if descuento else " "
         oferta = oferta if oferta else " "
 
-        return nombre, precio_actual, descuento, oferta
+    return nombre, precio_actual, descuento, oferta
 
 
 def generar_html(resultados, precios_guardados, simular):
