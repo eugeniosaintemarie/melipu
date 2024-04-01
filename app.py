@@ -74,20 +74,19 @@ def obtener(link):
     else:
         descuento = None
 
-    monto_element = (
-        soup.find("span", class_="andes-radio")
-        .find_next_sibling("div", class_="ui-pdp-buy-box-offers_offer-content")
-        .find("span", class_="andes-money-amount")
-    )
-    if monto_element and float(monto_element.text) < float(precio_actual):
-        oferta = monto_element.text.strip().replace(".", "").replace(",", ".")
+    monto_element = soup.find("span", text="1 pago")
+    if monto_element:
+        monto_siguiente = monto_element.find_next_sibling("div", class_="ui-pdp-price__second-line")
+        if monto_siguiente:
+            monto_span = monto_siguiente.find("span", class_="andes-money-amount__fraction")
+            if monto_span:
+                oferta = monto_span.get_text().strip().replace(".", "").replace(",", ".")
+            else:
+                oferta = None
+        else:
+            oferta = None
     else:
         oferta = None
-
-        nombre = nombre if nombre else "Nombre no disponible"
-        precio_actual = precio_actual if precio_actual else "Precio no disponible"
-        descuento = descuento if descuento else " "
-        oferta = oferta if oferta else " "
 
     return nombre, precio_actual, descuento, oferta
 
