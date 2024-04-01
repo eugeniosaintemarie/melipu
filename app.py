@@ -79,13 +79,35 @@ def obtener(link):
         class_="ui-pdp--sticky-wrapper ui-pdp--sticky-wrapper-right",
     )
     if contenedor_principal:
-        oferta_element = contenedor_principal.find(
-            "span", attrs={"data-testid": "price-part"}
+        contenedor_row = contenedor_principal.find_parent(
+            "div",
+            class_="ui-pdp-container__col col-1 ui-pdp-container--column-right mt-16 pr-16",
         )
-        if oferta_element:
-            oferta = (
-                oferta_element.get_text().strip().replace(".", "").replace(",", ".")
+        if contenedor_row:
+            contenedor_form = contenedor_row.find_parent(
+                "form", class_="ui-pdp--sticky-wrapper ui-pdp--sticky-wrapper-right"
             )
+            if contenedor_form:
+                contenedor_div = contenedor_form.find(
+                    "div", class_="andes-money-amount__fraction"
+                )
+                if contenedor_div:
+                    oferta_element = contenedor_div.find(
+                        "span", attrs={"data-testid": "price-part"}
+                    )
+                    if oferta_element:
+                        oferta = (
+                            oferta_element.get_text()
+                            .strip()
+                            .replace(".", "")
+                            .replace(",", ".")
+                        )
+                    else:
+                        oferta = None
+                else:
+                    oferta = None
+            else:
+                oferta = None
         else:
             oferta = None
     else:
