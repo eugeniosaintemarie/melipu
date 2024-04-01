@@ -96,10 +96,11 @@ def obtener(link):
 def generar_html(resultados, precios_guardados, simular):
     html_content = """
     <!DOCTYPE html>
-    <html>
+    <html lang="es">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>MELIPU</title>
-        <script src="https://eugeniosaintemarie.github.io/melipu/app.js"></script>
         <link rel="icon" type="image/svg+xml" href="https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/5.21.22/mercadolibre/favicon.svg">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <link rel="manifest" href="https://eugeniosaintemarie.github.io/melipu/manifest.json" />
@@ -113,6 +114,7 @@ def generar_html(resultados, precios_guardados, simular):
         <link rel="apple-touch-icon" href="https://eugeniosaintemarie.github.io/melipu/image/icon/icon-512x512.png" />
         <meta name="apple-mobile-web-app-status-bar" content="#FFD101" />
         <meta name="theme-color" content="#FFD101" />
+        <script src="https://eugeniosaintemarie.github.io/melipu/app.js"></script>
         <style>
             body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
             .item { margin-bottom: 20px; }
