@@ -115,7 +115,7 @@ def generar_html(resultados, precios_guardados, simular):
             .precio_anterior { color: #FF9800; }
             .precio_no_disponible { color: #F44336; }
             .descuento { color: #4CAF50; font-size: 12px; }
-            .oferta { color: #FFC107; font-size: 18px; }
+            .oferta { color: #FFC107; font-size: 14px; }
             .actualizacion { color: #607D8B; align-text: right; font-size: 10px; }
         </style>
     </head>
