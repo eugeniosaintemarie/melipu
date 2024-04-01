@@ -74,19 +74,12 @@ def obtener(link):
     else:
         descuento = None
 
-    monto_element = soup.find("span", text="1 pago")
-    if monto_element:
-        monto_siguiente = monto_element.find_next_sibling("div", class_="ui-pdp-price__second-line")
-        if monto_siguiente:
-            monto_span = monto_siguiente.find("span", class_="andes-money-amount__fraction")
-            if monto_span:
-                oferta = monto_span.get_text().strip().replace(".", "").replace(",", ".")
-            else:
-                oferta = None
-        else:
-            oferta = None
-    else:
-        oferta = None
+    montos = soup.find_all("span", class_="andes-money-amount__fraction")
+    oferta = None
+    for monto in montos:
+        if monto.find_previous_sibling("span", text="1 pago"):
+            oferta = monto.get_text().strip().replace(".", "").replace(",", ".")
+            break
 
     return nombre, precio_actual, descuento, oferta
 
