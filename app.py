@@ -74,19 +74,9 @@ def obtener(link):
     else:
         descuento = None
 
-    oferta_element = soup.find(
-        "li", class_="andes-list__item ui-pdp-buy-box-offers__offer-list-item"
-    )
+    oferta_element = soup.find("span", attrs={"data-testid": "price-part"})
     if oferta_element:
-        oferta_obtenida = oferta_element.find(
-            "span", class_="andes-money-amount__fraction"
-        )
-        if oferta_obtenida:
-            oferta = (
-                oferta_obtenida.get_text().strip().replace(".", "").replace(",", ".")
-            )
-        else:
-            oferta = None
+        oferta = oferta_element.get_text().strip().replace(".", "").replace(",", ".")
     else:
         oferta = None
 
