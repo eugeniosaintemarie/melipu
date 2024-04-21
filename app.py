@@ -182,9 +182,8 @@ def generar_html(resultados, precios_guardados, simular):
                 "oferta": oferta,
             }
         else:
-            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
-                "precio_actual"
-            ]
+            precio_anterior_actual = precios_guardados[enlace]["precio_actual"]
+            precios_guardados[enlace]["precio_anterior"] = precio_anterior_actual
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
 
         precio_nuevo = float(precio_nuevo) if precio_nuevo else None
