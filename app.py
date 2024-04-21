@@ -109,7 +109,7 @@ def obtener(link):
     return nombre, precio_actual, descuento, oferta
 
 
-def generar_html(resultados, precios_guardados, simular):
+def generar_html(resultados, precios_guardados, simular, titulo):
     html_content = """
     <!DOCTYPE html>
     <html lang="es">
@@ -281,7 +281,9 @@ def main():
             oferta,
         )
 
-    html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
+    html_content = generar_html(
+        resultados, precios_guardados, publicacion_ficticia, titulo
+    )
     with open("index.html", "w", encoding="utf-8") as html_file:
         html_file.write(html_content)
 
