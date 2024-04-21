@@ -281,6 +281,7 @@ def main():
             oferta,
         )
 
+    titulo = "Título de la publicación"
     html_content = generar_html(
         resultados, precios_guardados, publicacion_ficticia, titulo
     )
