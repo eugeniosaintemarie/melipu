@@ -52,8 +52,6 @@ def obtener(link):
         else nombre_obtenido.get_text().strip() if nombre_obtenido else None
     )
 
-    id_unico = nombre.replace(" ", "-").rstrip(".")
-
     precio_element = soup.find("div", class_="ui-pdp-price__second-line")
 
     if precio_element:
@@ -107,10 +105,8 @@ def obtener(link):
                 oferta = None
         else:
             oferta = None
-    else:
-        oferta = None
 
-    return id_unico, nombre, precio_actual, descuento, oferta
+    return nombre, precio_actual, descuento, oferta
 
 
 def generar_html(resultados, precios_guardados, simular):
@@ -260,7 +256,7 @@ def main():
             nombre, precio_nuevo, precio_anterior, descuento = publicacion_ficticia
             precio_nuevo_str = str(precio_nuevo)
         else:
-            id_unico, nombre, precio_nuevo_str, descuento, oferta = obtener(enlace)
+            nombre, precio_nuevo_str, descuento, oferta = obtener(enlace)
 
             if nombre and precio_nuevo_str:
                 nombre = nombre[:32] + "..."
@@ -280,8 +276,7 @@ def main():
             ]
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
 
-        resultados[id_unico] = (
-            enlace,
+        resultados[enlace] = (
             nombre,
             precio_nuevo_str,
             precios_guardados[enlace]["precio_anterior"],
