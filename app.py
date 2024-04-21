@@ -186,7 +186,7 @@ def generar_html(resultados, precios_guardados, simular):
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
 
         precio_nuevo = float(precio_nuevo) if precio_nuevo else None
-        id_titulo = nombre_publicacion.replace(" ", "_").replace("...", "")
+        id_titulo = nombre_publicacion.replace(" ", "_").replace("...", "").rstrip('_')
         precio_anterior = float(precio_anterior) if precio_anterior else None
         precio_nuevo_formateado = (
             f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else ""
