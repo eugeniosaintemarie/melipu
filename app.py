@@ -52,6 +52,8 @@ def obtener(link):
         else nombre_obtenido.get_text().strip() if nombre_obtenido else None
     )
 
+    id_unico = nombre.replace(" ", "-").rstrip(".")
+
     precio_element = soup.find("div", class_="ui-pdp-price__second-line")
 
     if precio_element:
@@ -108,7 +110,7 @@ def obtener(link):
     else:
         oferta = None
 
-    return nombre, precio_actual, descuento, oferta
+    return nombre, precio_actual, id_unico, descuento, oferta
 
 
 def generar_html(resultados, precios_guardados, simular):
@@ -151,12 +153,16 @@ def generar_html(resultados, precios_guardados, simular):
     <br/>
     """
 
-    for enlace, (
-        nombre,
-        precio_nuevo,
-        precio_anterior,
-        descuento,
-        oferta,
+    for (
+        enlace,
+        id_unico,
+        (
+            nombre,
+            precio_nuevo,
+            precio_anterior,
+            descuento,
+            oferta,
+        ),
     ) in resultados.items():
         if enlace == "https://google.com":
             nombre_publicacion, precio_actual, descuento, oferta = simular
@@ -201,7 +207,7 @@ def generar_html(resultados, precios_guardados, simular):
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre}</a></br>
-            <span class="precio_actual"><span class="mark_before">> </span>{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span><span class="oferta"> {oferta}</span></br>
+            <span class="precio_actual" id="{id_unico}"><span class="mark_before">> </span>{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span><span class="oferta"> {oferta}</span></br>
             <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
         </div>
         """
@@ -239,7 +245,9 @@ def main():
         enlaces = [line.strip() for line in file]
 
     if publicacion_ficticia:
-        nombre, precio_nuevo, precio_anterior, descuento = publicacion_ficticia
+        nombre, precio_nuevo, id_unico, precio_anterior, descuento = (
+            publicacion_ficticia
+        )
         enlace_ficticio = "https://google.com"
         precio_actual_str = str(precio_nuevo)
         precio_anterior_str = str(precio_anterior)
@@ -274,7 +282,8 @@ def main():
             ]
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
 
-        resultados[enlace] = (
+        resultados[id_unico] = (
+            enlace,
             nombre,
             precio_nuevo_str,
             precios_guardados[enlace]["precio_anterior"],
