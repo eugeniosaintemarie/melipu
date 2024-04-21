@@ -149,16 +149,12 @@ def generar_html(resultados, precios_guardados, simular):
     <br/>
     """
 
-    for (
-        id_unico,
-        enlace,
-        (
-            nombre,
-            precio_nuevo,
-            precio_anterior,
-            descuento,
-            oferta,
-        ),
+    for enlace, (
+        nombre,
+        precio_nuevo,
+        precio_anterior,
+        descuento,
+        oferta,
     ) in resultados.items():
         if enlace == "https://google.com":
             nombre_publicacion, precio_actual, descuento, oferta = simular
@@ -203,7 +199,7 @@ def generar_html(resultados, precios_guardados, simular):
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre}</a></br>
-            <span class="precio_actual" id="{id_unico}"><span class="mark_before">> </span>{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span><span class="oferta"> {oferta}</span></br>
+            <span class="precio_actual" id="{enlace}"><span class="mark_before">> </span>{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span><span class="oferta"> {oferta}</span></br>
             <span class="precio_anterior"><span class="mark_after">< </span>{precio_anterior_formateado}</span></br>
         </div>
         """
