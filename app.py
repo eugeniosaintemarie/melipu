@@ -110,7 +110,7 @@ def obtener(link):
     else:
         oferta = None
 
-    return nombre, precio_actual, descuento, oferta
+    return id_unico, nombre, precio_actual, descuento, oferta
 
 
 def generar_html(resultados, precios_guardados, simular):
@@ -154,8 +154,8 @@ def generar_html(resultados, precios_guardados, simular):
     """
 
     for (
-        enlace,
         id_unico,
+        enlace,
         (
             nombre,
             precio_nuevo,
@@ -245,9 +245,7 @@ def main():
         enlaces = [line.strip() for line in file]
 
     if publicacion_ficticia:
-        nombre, precio_nuevo, id_unico, precio_anterior, descuento = (
-            publicacion_ficticia
-        )
+        nombre, precio_nuevo, precio_anterior, descuento = publicacion_ficticia
         enlace_ficticio = "https://google.com"
         precio_actual_str = str(precio_nuevo)
         precio_anterior_str = str(precio_anterior)
@@ -262,7 +260,7 @@ def main():
             nombre, precio_nuevo, precio_anterior, descuento = publicacion_ficticia
             precio_nuevo_str = str(precio_nuevo)
         else:
-            nombre, precio_nuevo_str, descuento, oferta = obtener(enlace)
+            id_unico, nombre, precio_nuevo_str, descuento, oferta = obtener(enlace)
 
             if nombre and precio_nuevo_str:
                 nombre = nombre[:32] + "..."
