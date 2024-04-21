@@ -105,8 +105,10 @@ def obtener(link):
                 oferta = None
         else:
             oferta = None
+    else:
+        oferta = None
 
-    return nombre, precio_actual, descuento, oferta
+    return nombre, precio_actual, descuento, oferta if oferta else None
 
 
 def generar_html(resultados, precios_guardados, simular):
