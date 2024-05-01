@@ -66,6 +66,7 @@ def obtener(link):
     else:
         precio_actual = None
 
+    descuento_element = None  # Inicializamos descuento_element
     if precio_element:
         descuento_element = precio_element.select_one(
             ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
