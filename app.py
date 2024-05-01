@@ -45,7 +45,7 @@ def obtener(link):
     soup = BeautifulSoup(response.text, "html.parser")
 
     nombre_element = soup.find(class_="ui-pdp-title")
-    nombre_obtenido = nombre_element.get_text().strip()
+    nombre_obtenido = nombre_element.get_text().strip() if nombre_element else None
     nombre = (
         nombre_obtenido
         if isinstance(nombre_obtenido, str)
