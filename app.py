@@ -7,7 +7,6 @@ from firebase_admin import credentials, messaging, firestore
 import datetime
 import pytz
 
-
 firebase_admin_sdk_json_str = os.environ["FIREBASE_ADMIN_SDK"]
 firebase_admin_sdk_json = json.loads(firebase_admin_sdk_json_str)
 cred = credentials.Certificate(firebase_admin_sdk_json)
@@ -75,11 +74,6 @@ def obtener(link):
             descuento = descuento_element.get_text().strip()
         else:
             descuento = None
-    else:
-        descuento = None
-
-    if descuento_element:
-        descuento = descuento_element.get_text().strip()
     else:
         descuento = None
 
@@ -179,7 +173,8 @@ def generar_html(resultados, precios_guardados, simular):
                 precio_anterior_str = (
                     str(precios_guardados[enlace]["precio_anterior"])
                     if enlace in precios_guardados
-                    else None
+                    and precios_guardados[enlace]["precio_anterior"] is not None
+                    else ""
                 )
             else:
                 continue
@@ -191,8 +186,9 @@ def generar_html(resultados, precios_guardados, simular):
                 "oferta": oferta,
             }
         else:
-            precio_anterior_actual = precios_guardados[enlace]["precio_actual"]
-            precios_guardados[enlace]["precio_anterior"] = precio_anterior_actual
+            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
+                "precio_actual"
+            ]
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
 
         precio_nuevo = float(precio_nuevo) if precio_nuevo else None
