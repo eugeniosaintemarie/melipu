@@ -274,10 +274,10 @@ def main():
                 "oferta": oferta,
             }
         else:
-            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
-                "precio_actual"
-            ]
+            # Guardar el precio actual como el precio anterior antes de actualizar el precio actual
+            precio_anterior = precios_guardados[enlace]["precio_actual"]
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
+            precios_guardados[enlace]["precio_anterior"] = precio_anterior
 
         resultados[enlace] = (
             nombre,
