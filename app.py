@@ -1,44 +1,3 @@
-import os
-import json
-import requests
-from bs4 import BeautifulSoup
-import firebase_admin
-from firebase_admin import credentials, messaging, firestore
-import datetime
-import pytz
-
-firebase_admin_sdk_json_str = os.environ["FIREBASE_ADMIN_SDK"]
-firebase_admin_sdk_json = json.loads(firebase_admin_sdk_json_str)
-cred = credentials.Certificate(firebase_admin_sdk_json)
-firebase_admin.initialize_app(cred)
-
-
-def obtener_tokens():
-    db = firestore.client()
-    subcollection_ref = db.collection("tokens").document("YZ1lgw53iAFpxq8fUm8V")
-    docs = subcollection_ref.collection("YZ1lgw53iAFpxq8fUm8V").stream()
-    if not docs:
-        return []
-    else:
-        tokens = [doc.to_dict().get("token") for doc in docs]
-        return tokens
-
-
-def enviar_notificacion(titulo, cuerpo, tokens):
-    message = messaging.MulticastMessage(
-        notification=messaging.Notification(
-            title=titulo,
-            body=cuerpo,
-        ),
-        tokens=tokens,
-    )
-    response = messaging.send_multicast(message)
-
-
-def simular():
-    return "Titulo", 100000, 150000, "10%", 90000
-
-
 def obtener(link):
     response = requests.get(link)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -274,7 +233,6 @@ def main():
                 "oferta": oferta,
             }
         else:
-            # Guardar el precio actual como el precio anterior antes de actualizar el precio actual
             precio_anterior = precios_guardados[enlace]["precio_actual"]
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
             precios_guardados[enlace]["precio_anterior"] = precio_anterior
