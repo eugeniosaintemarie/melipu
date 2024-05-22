@@ -51,67 +51,37 @@ def obtener(link):
         else nombre_obtenido.get_text().strip() if nombre_obtenido else None
     )
 
-    precio_element = soup.find("div", class_="ui-pdp-price__second-line")
+    precio_actual = None
+    precio_anterior = None
+    descuento = None
 
+    precio_element = soup.find("div", class_="ui-pdp-price__second-line")
     if precio_element:
         precio_obtenido = precio_element.find(
             "span", class_="andes-money-amount__fraction"
         )
         if precio_obtenido:
-            precio_actual = precio_obtenido.get_text().strip()
-            precio_actual = precio_actual.replace(".", "").replace(",", ".")
-        else:
-            precio_actual = None
-    else:
-        precio_actual = None
+            precio_actual = (
+                precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
+            )
 
-    descuento_element = None
-    if precio_element:
-        descuento_element = precio_element.select_one(
-            ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM"
+        descuento_element = precio_element.find(
+            "span", class_="andes-money-amount__discount"
         )
         if descuento_element:
             descuento = descuento_element.get_text().strip()
-        else:
-            descuento = None
-    else:
-        descuento = None
-
-    contenedor_principal = soup.find(
-        "div",
-        class_="ui-pdp-container__col col-1 ui-pdp-container--column-right mt-16 pr-16",
-    )
-    if contenedor_principal:
-        contenedor_row = contenedor_principal.find_parent(
-            "div",
-            class_="ui-pdp--sticky-wrapper ui-pdp--sticky-wrapper-right",
-        )
-        if contenedor_row:
-            contenedor_form = contenedor_row.find_parent(
-                "div", class_="ui-pdp-container__row"
+            precio_anterior_element = precio_element.find(
+                "s", class_="andes-money-amount__original"
             )
-            if contenedor_form:
-                contenedor_div = contenedor_form.find(
-                    "div", class_="ui-pdp-container__row"
+            if precio_anterior_element:
+                precio_anterior = (
+                    precio_anterior_element.get_text()
+                    .strip()
+                    .replace(".", "")
+                    .replace(",", ".")
                 )
-                if contenedor_div:
-                    oferta_element = contenedor_div.find(
-                        "span", attrs={"data-testid": "price-part"}
-                    )
-                    if oferta_element:
-                        oferta = oferta_element.get_text().strip().replace(",", ".")
-                    else:
-                        oferta = None
-                else:
-                    oferta = None
-            else:
-                oferta = None
-        else:
-            oferta = None
-    else:
-        oferta = None
 
-    return nombre, precio_actual, descuento, oferta
+    return nombre, precio_actual, precio_anterior, descuento
 
 
 def generar_html(resultados, precios_guardados, simular):
@@ -159,15 +129,16 @@ def generar_html(resultados, precios_guardados, simular):
         precio_nuevo,
         precio_anterior,
         descuento,
-        oferta,
     ) in resultados.items():
         if enlace == "https://google.com":
             nombre_publicacion, precio_actual, descuento, oferta = simular
             precio_nuevo_str = str(precio_nuevo)
             precio_anterior_str = str(precio_anterior)
         else:
-            nombre_publicacion, precio_actual, descuento, oferta = obtener(enlace)
-            if nombre_publicacion and precio_nuevo:
+            nombre_publicacion, precio_actual, precio_anterior, descuento = obtener(
+                enlace
+            )
+            if nombre_publicacion and precio_actual:
                 nombre_publicacion = nombre_publicacion[:32] + "..."
                 precio_nuevo_str = str(precio_nuevo)
                 precio_anterior_str = (
@@ -178,22 +149,29 @@ def generar_html(resultados, precios_guardados, simular):
                 )
             else:
                 continue
+
         if enlace not in precios_guardados:
             precios_guardados[enlace] = {
                 "precio_actual": precio_nuevo_str,
                 "precio_anterior": None,
                 "descuento": descuento,
-                "oferta": oferta,
+                "oferta": None,
             }
         else:
-            precios_guardados[enlace]["precio_anterior"] = precios_guardados[enlace][
-                "precio_actual"
-            ]
+            precio_anterior = precios_guardados[enlace]["precio_actual"]
             precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
+            precios_guardados[enlace]["precio_anterior"] = precio_anterior
 
-        precio_nuevo = float(precio_nuevo) if precio_nuevo else None
+        resultados[enlace] = (
+            nombre,
+            precio_nuevo_str,
+            precios_guardados[enlace]["precio_anterior"],
+            descuento,
+        )
+
+        precio_nuevo = float(precio_nuevo_str) if precio_nuevo_str else None
         id_titulo = nombre_publicacion.replace(" ", "_").replace("...", "").rstrip("_")
-        precio_anterior = float(precio_anterior) if precio_anterior else None
+        precio_anterior = float(precio_anterior_str) if precio_anterior_str else None
         precio_nuevo_formateado = (
             f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else ""
         )
@@ -201,12 +179,11 @@ def generar_html(resultados, precios_guardados, simular):
             f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else ""
         )
         descuento = f"{descuento}" if descuento else ""
-        oferta = f" {oferta}" if oferta else ""
 
         html_content += f"""
         <div class="item">
             <a href="{enlace}" class="nombre">{nombre}</a></br>
-            <span class="mark_before">> </span><span class="precio_actual" id="{id_titulo}">{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span><span class="oferta"> {oferta}</span></br>
+            <span class="mark_before">> </span><span class="precio_actual" id="{id_titulo}">{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span></br>
             <span class="mark_after">< </span><span class="precio_anterior">{precio_anterior_formateado}</span></br>
         </div>
         """
@@ -220,11 +197,6 @@ def generar_html(resultados, precios_guardados, simular):
     </div>
     </body>
     </html>
-    """
-    html_content += """
-        <script src="https://eugeniosaintemarie.github.io/melipu/app.js"></script>
-        </body>
-        </html>
     """
     return html_content
 
@@ -256,10 +228,12 @@ def main():
         enlaces_procesados.add(enlace)
 
         if enlace == "https://google.com":
-            nombre, precio_nuevo, precio_anterior, descuento, oferta = publicacion_ficticia
+            nombre, precio_nuevo, precio_anterior, descuento, oferta = (
+                publicacion_ficticia
+            )
             precio_nuevo_str = str(precio_nuevo)
         else:
-            nombre, precio_nuevo_str, descuento, oferta = obtener(enlace)
+            nombre, precio_nuevo_str, precio_anterior_str, descuento = obtener(enlace)
 
             if nombre and precio_nuevo_str:
                 nombre = nombre[:32] + "..."
@@ -271,7 +245,7 @@ def main():
                 "precio_actual": precio_nuevo_str,
                 "precio_anterior": None,
                 "descuento": descuento,
-                "oferta": oferta,
+                "oferta": None,
             }
         else:
             precio_anterior = precios_guardados[enlace]["precio_actual"]
@@ -283,7 +257,6 @@ def main():
             precio_nuevo_str,
             precios_guardados[enlace]["precio_anterior"],
             descuento,
-            oferta,
         )
 
     html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
