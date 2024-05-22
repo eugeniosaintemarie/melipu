@@ -68,7 +68,7 @@ def obtener(link):
     descuento_element = None
     if precio_element:
         descuento_element = precio_element.select_one(
-            ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM .andes-money-amount__discount"
+            ".ui-pdp-price__second-line__label.ui-pdp-color--GREEN.ui-pdp-size--MEDIUM"
         )
         if descuento_element:
             descuento = descuento_element.get_text().strip()
@@ -111,7 +111,7 @@ def obtener(link):
     else:
         oferta = None
 
-    return nombre, precio_actual, descuento, oferta if oferta else None
+    return nombre, precio_actual, descuento, oferta
 
 
 def generar_html(resultados, precios_guardados, simular):
@@ -244,7 +244,7 @@ def main():
         enlaces = [line.strip() for line in file]
 
     if publicacion_ficticia:
-        nombre, precio_nuevo, precio_anterior, descuento = publicacion_ficticia
+        nombre, precio_nuevo, precio_anterior, descuento, oferta = publicacion_ficticia
         enlace_ficticio = "https://google.com"
         precio_actual_str = str(precio_nuevo)
         precio_anterior_str = str(precio_anterior)
@@ -256,7 +256,7 @@ def main():
         enlaces_procesados.add(enlace)
 
         if enlace == "https://google.com":
-            nombre, precio_nuevo, precio_anterior, descuento = publicacion_ficticia
+            nombre, precio_nuevo, precio_anterior, descuento, oferta = publicacion_ficticia
             precio_nuevo_str = str(precio_nuevo)
         else:
             nombre, precio_nuevo_str, descuento, oferta = obtener(enlace)
