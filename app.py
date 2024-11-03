@@ -2,26 +2,8 @@ import os
 import json
 import requests
 from bs4 import BeautifulSoup
-import firebase_admin
-from firebase_admin import credentials, messaging, firestore
 import datetime
 import pytz
-
-firebase_admin_sdk_json_str = os.environ["FIREBASE_ADMIN_SDK"]
-firebase_admin_sdk_json = json.loads(firebase_admin_sdk_json_str)
-cred = credentials.Certificate(firebase_admin_sdk_json)
-firebase_admin.initialize_app(cred)
-
-
-def obtener_tokens():
-    db = firestore.client()
-    subcollection_ref = db.collection("tokens").document("YZ1lgw53iAFpxq8fUm8V")
-    docs = subcollection_ref.collection("YZ1lgw53iAFpxq8fUm8V").stream()
-    if not docs:
-        return []
-    else:
-        tokens = [doc.to_dict().get("token") for doc in docs]
-        return tokens
 
 
 def enviar_notificacion(titulo, cuerpo, tokens):
