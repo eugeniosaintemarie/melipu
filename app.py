@@ -58,7 +58,7 @@ def obtener(link):
     precio_element = soup.find("div", class_="ui-pdp-price__second-line")
     if precio_element:
         precio_obtenido = precio_element.find(
-            "span", class_="andes-money-amount__fraction"
+            "span", class_="price-part"
         )
         if precio_obtenido:
             precio_actual = (
