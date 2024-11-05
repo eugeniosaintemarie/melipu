@@ -6,17 +6,6 @@ import datetime
 import pytz
 
 
-def enviar_notificacion(titulo, cuerpo, tokens):
-    message = messaging.MulticastMessage(
-        notification=messaging.Notification(
-            title=titulo,
-            body=cuerpo,
-        ),
-        tokens=tokens,
-    )
-    response = messaging.send_multicast(message)
-
-
 def simular():
     return "Titulo", 100000, 150000, "10%", 90000
 
