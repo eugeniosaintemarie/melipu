@@ -19,50 +19,7 @@ def obtener(link):
     nombre = (
         nombre_obtenido
         if isinstance(nombre_obtenido, str)
-        else nombre_obtenido.get_text().strip        def obtener(link):
-            response = requests.get(link)
-            soup = BeautifulSoup(response.text, "html.parser")
-        
-            nombre_element = soup.find(class_="ui-pdp-title")
-            nombre_obtenido = nombre_element.get_text().strip() if nombre_element else None
-            nombre = (
-                nombre_obtenido
-                if isinstance(nombre_obtenido, str)
-                else nombre_obtenido.get_text().strip() if nombre_obtenido else None
-            )
-        
-            precio_actual = None
-            precio_anterior = None
-            descuento = None
-        
-            precio_element = soup.find("div", class_="ui-pdp-price__second-line")
-            if precio_element:
-                precio_obtenido = precio_element.find(
-                    "span", class_="andes-money-amount__fraction"
-                )
-                if precio_obtenido:
-                    precio_actual = (
-                        precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
-                    )
-        
-                precio_anterior_element = precio_element.find(
-                    "s", class_="andes-money-amount__original"
-                )
-                if precio_anterior_element:
-                    precio_anterior = (
-                        precio_anterior_element.get_text()
-                        .strip()
-                        .replace(".", "")
-                        .replace(",", ".")
-                    )
-        
-                descuento_element = precio_element.find(
-                    "span", class_="andes-money-amount__discount"
-                )
-                if descuento_element:
-                    descuento = descuento_element.get_text().strip()
-        
-            return nombre, precio_actual, precio_anterior, descuento() if nombre_obtenido else None
+        else nombre_obtenido.get_text().strip() if nombre_obtenido else None
     )
 
     precio_actual = None
@@ -79,21 +36,22 @@ def obtener(link):
                 precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
             )
 
+        precio_anterior_element = precio_element.find(
+            "s", class_="andes-money-amount__original"
+        )
+        if precio_anterior_element:
+            precio_anterior = (
+                precio_anterior_element.get_text()
+                .strip()
+                .replace(".", "")
+                .replace(",", ".")
+            )
+
         descuento_element = precio_element.find(
             "span", class_="andes-money-amount__discount"
         )
         if descuento_element:
             descuento = descuento_element.get_text().strip()
-            precio_anterior_element = precio_element.find(
-                "s", class_="andes-money-amount__original"
-            )
-            if precio_anterior_element:
-                precio_anterior = (
-                    precio_anterior_element.get_text()
-                    .strip()
-                    .replace(".", "")
-                    .replace(",", ".")
-                )
 
     return nombre, precio_actual, precio_anterior, descuento
 
@@ -136,50 +94,7 @@ def generar_html(resultados, precios_guardados, simular):
     </head>
     <body>
     <br/>
-    """    def obtener(link):
-        response = requests.get(link)
-        soup = BeautifulSoup(response.text, "html.parser")
-    
-        nombre_element = soup.find(class_="ui-pdp-title")
-        nombre_obtenido = nombre_element.get_text().strip() if nombre_element else None
-        nombre = (
-            nombre_obtenido
-            if isinstance(nombre_obtenido, str)
-            else nombre_obtenido.get_text().strip() if nombre_obtenido else None
-        )
-    
-        precio_actual = None
-        precio_anterior = None
-        descuento = None
-    
-        precio_element = soup.find("div", class_="ui-pdp-price__second-line")
-        if precio_element:
-            precio_obtenido = precio_element.find(
-                "span", class_="andes-money-amount__fraction"
-            )
-            if precio_obtenido:
-                precio_actual = (
-                    precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
-                )
-    
-            precio_anterior_element = precio_element.find(
-                "s", class_="andes-money-amount__original"
-            )
-            if precio_anterior_element:
-                precio_anterior = (
-                    precio_anterior_element.get_text()
-                    .strip()
-                    .replace(".", "")
-                    .replace(",", ".")
-                )
-    
-            descuento_element = precio_element.find(
-                "span", class_="andes-money-amount__discount"
-            )
-            if descuento_element:
-                descuento = descuento_element.get_text().strip()
-    
-        return nombre, precio_actual, precio_anterior, descuento
+    """
 
     for enlace, (
         nombre,
