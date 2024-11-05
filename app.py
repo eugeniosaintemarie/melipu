@@ -102,63 +102,36 @@ def generar_html(resultados, precios_guardados, simular):
         precio_anterior,
         descuento,
     ) in resultados.items():
-        if enlace == "https://google.com":
-            nombre_publicacion, precio_actual, descuento, oferta = simular
-            precio_nuevo_str = str(precio_nuevo)
-            precio_anterior_str = str(precio_anterior)
-        else:
-            nombre_publicacion, precio_actual, precio_anterior, descuento = obtener(
-                enlace
+        nombre_publicacion = nombre  # Preservar el nombre original
+        precio_nuevo_str = precio_nuevo  # Usar el precio ya procesado
+        precio_anterior_str = precio_anterior  # Usar el precio anterior ya procesado
+
+        try:
+            precio_nuevo = float(precio_nuevo_str) if precio_nuevo_str else None
+            id_titulo = (
+                nombre_publicacion.replace(" ", "_").replace("...", "").rstrip("_")
             )
-            if nombre_publicacion and precio_actual:
-                nombre_publicacion = nombre_publicacion[:32] + "..."
-                precio_nuevo_str = str(precio_nuevo)
-                precio_anterior_str = (
-                    str(precios_guardados[enlace]["precio_anterior"])
-                    if enlace in precios_guardados
-                    and precios_guardados[enlace]["precio_anterior"] is not None
-                    else ""
-                )
-            else:
-                continue
+            precio_anterior = (
+                float(precio_anterior_str) if precio_anterior_str else None
+            )
 
-        if enlace not in precios_guardados:
-            precios_guardados[enlace] = {
-                "precio_actual": precio_nuevo_str,
-                "precio_anterior": None,
-                "descuento": descuento,
-                "oferta": None,
-            }
-        else:
-            precio_anterior = precios_guardados[enlace]["precio_actual"]
-            precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
-            precios_guardados[enlace]["precio_anterior"] = precio_anterior
+            precio_nuevo_formateado = (
+                f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else ""
+            )
+            precio_anterior_formateado = (
+                f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else ""
+            )
+            descuento = f"{descuento}" if descuento else ""
 
-        resultados[enlace] = (
-            nombre,
-            precio_nuevo_str,
-            precios_guardados[enlace]["precio_anterior"],
-            descuento,
-        )
-
-        precio_nuevo = float(precio_nuevo_str) if precio_nuevo_str else None
-        id_titulo = nombre_publicacion.replace(" ", "_").replace("...", "").rstrip("_")
-        precio_anterior = float(precio_anterior_str) if precio_anterior_str else None
-        precio_nuevo_formateado = (
-            f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else ""
-        )
-        precio_anterior_formateado = (
-            f"${precio_anterior:,.0f}".replace(",", ".") if precio_anterior else ""
-        )
-        descuento = f"{descuento}" if descuento else ""
-
-        html_content += f"""
-        <div class="item">
-            <a href="{enlace}" class="nombre">{nombre}</a></br>
-            <span class="mark_before">> </span><span class="precio_actual" id="{id_titulo}">{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span></br>
-            <span class="mark_after">< </span><span class="precio_anterior">{precio_anterior_formateado}</span></br>
-        </div>
-        """
+            html_content += f"""
+            <div class="item">
+                <a href="{enlace}" class="nombre">{nombre}</a></br>
+                <span class="mark_before">> </span><span class="precio_actual" id="{id_titulo}">{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span></br>
+                <span class="mark_after">< </span><span class="precio_anterior">{precio_anterior_formateado}</span></br>
+            </div>
+            """
+        except Exception as e:
+            continue  # Si hay error al procesar un enlace, continuar con el siguiente
 
     actualizacion = datetime.datetime.now(
         pytz.timezone("America/Argentina/Buenos_Aires")
