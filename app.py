@@ -102,9 +102,9 @@ def generar_html(resultados, precios_guardados, simular):
         precio_anterior,
         descuento,
     ) in resultados.items():
-        nombre_publicacion = nombre  # Preservar el nombre original
-        precio_nuevo_str = precio_nuevo  # Usar el precio ya procesado
-        precio_anterior_str = precio_anterior  # Usar el precio anterior ya procesado
+        nombre_publicacion = nombre
+        precio_nuevo_str = precio_nuevo
+        precio_anterior_str = precio_anterior
 
         try:
             precio_nuevo = float(precio_nuevo_str) if precio_nuevo_str else None
@@ -131,11 +131,11 @@ def generar_html(resultados, precios_guardados, simular):
             </div>
             """
         except Exception as e:
-            continue  # Si hay error al procesar un enlace, continuar con el siguiente
+            continue
 
     actualizacion = datetime.datetime.now(
         pytz.timezone("America/Argentina/Buenos_Aires")
-    ).strftime("%Y/%m/%d %H:%M")
+    ).strftime("%H:%M %y.%m.%d")
     html_content += f"""
     <div class="actualizacion">
         <br/>{actualizacion}
