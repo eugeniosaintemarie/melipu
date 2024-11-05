@@ -135,7 +135,7 @@ def generar_html(resultados, precios_guardados, simular):
 
     actualizacion = datetime.datetime.now(
         pytz.timezone("America/Argentina/Buenos_Aires")
-    ).strftime("%H:%M %y.%m.%d")
+    ).strftime("%H:%M %d.%m.%y")
     html_content += f"""
     <div class="actualizacion">
         <br/>{actualizacion}
