@@ -1,59 +1,125 @@
 import os
-import json
 import requests
 from bs4 import BeautifulSoup
+import json
 import datetime
 import pytz
+import firebase_admin
+from firebase_admin import credentials, messaging
 
 
-def simular():
-    return "Titulo", 100000, 150000, "10%", 90000
+# def simular():
+#    return "Titulo", 100000, 150000, "10%", 90000
 
 
-def obtener(link):
-    response = requests.get(link)
-    soup = BeautifulSoup(response.text, "html.parser")
+def initialize_firebase():
+    try:
+        creds_json = os.getenv("FIREBASE_ADMIN_CREDENTIALS")
 
-    nombre_element = soup.find(class_="ui-pdp-title")
-    nombre_obtenido = nombre_element.get_text().strip() if nombre_element else None
-    nombre = (
-        nombre_obtenido
-        if isinstance(nombre_obtenido, str)
-        else nombre_obtenido.get_text().strip() if nombre_obtenido else None
+        if creds_json:
+            creds_dict = json.loads(creds_json)
+            cred = credentials.Certificate(creds_dict)
+        else:
+            cred = credentials.Certificate("serviceAccountKey.json")
+
+        firebase_admin.initialize_app(cred)
+    except Exception as e:
+        print(f"Error inicializando Firebase: {str(e)}")
+        raise
+
+
+link = "URL_DEL_PRODUCTO"
+previous_price = "PRECIO_ANTERIOR"
+device_token = "TOKEN_DEL_DISPOSITIVO"
+
+
+nombre, precio_actual, precio_anterior, descuento = obtener(
+    link, previous_price, device_token
+)
+
+
+def send_notification(token, title, body):
+    message = messaging.Message(
+        notification=messaging.Notification(
+            title=title,
+            body=body,
+        ),
+        token=token,
     )
+    response = messaging.send(message)
 
-    precio_actual = None
-    precio_anterior = None
-    descuento = None
 
-    precio_element = soup.find("div", class_="ui-pdp-price__second-line")
-    if precio_element:
-        precio_obtenido = precio_element.find(
-            "span", class_="andes-money-amount__fraction"
-        )
-        if precio_obtenido:
-            precio_actual = (
-                precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
+def obtener(link, previous_price, token):
+    try:
+        response = requests.get(link, timeout=30)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        nombre_element = soup.find(class_="ui-pdp-title")
+        nombre = None
+        if nombre_element:
+            nombre = (
+                nombre_element.get_text().strip()
+                if isinstance(nombre_element, str)
+                else nombre_element.get_text().strip()
             )
 
-        precio_anterior_element = precio_element.find(
-            "s", class_="andes-money-amount__original"
-        )
-        if precio_anterior_element:
+        precio_actual = None
+        precio_anterior = None
+        descuento = None
+
+        precio_element = soup.find("div", class_="ui-pdp-price__second-line")
+        if precio_element:
+            precio_obtenido = precio_element.find(
+                "span", class_="andes-money-amount__fraction"
+            )
+            precio_actual = (
+                precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
+                if precio_obtenido
+                else None
+            )
+
+            precio_anterior_element = precio_element.find(
+                "s", class_="andes-money-amount__original"
+            )
             precio_anterior = (
                 precio_anterior_element.get_text()
                 .strip()
                 .replace(".", "")
                 .replace(",", ".")
+                if precio_anterior_element
+                else None
             )
 
-        descuento_element = precio_element.find(
-            "span", class_="andes-money-amount__discount"
-        )
-        if descuento_element:
-            descuento = descuento_element.get_text().strip()
+            descuento_element = precio_element.find(
+                "span", class_="andes-money-amount__discount"
+            )
+            descuento = (
+                descuento_element.get_text().strip() if descuento_element else None
+            )
 
-    return nombre, precio_actual, precio_anterior, descuento
+        if (
+            precio_actual
+            and previous_price
+            and float(precio_actual) != float(previous_price)
+        ):
+            try:
+                send_notification(
+                    token,
+                    "Precio actualizado",
+                    f"El nuevo precio es ${float(precio_actual):,.2f}",
+                )
+            except Exception as e:
+                print(f"Error al enviar notificación: {str(e)}")
+
+        return nombre, precio_actual, precio_anterior, descuento
+
+    except requests.RequestException as e:
+        print(f"Error al obtener datos de {link}: {str(e)}")
+        return None, None, None, None
+    except Exception as e:
+        print(f"Error inesperado al procesar {link}: {str(e)}")
+        return None, None, None, None
 
 
 def generar_html(resultados, precios_guardados, simular):
@@ -147,66 +213,86 @@ def generar_html(resultados, precios_guardados, simular):
 
 
 def main():
-    mostrar_prueba = False
-    publicacion_ficticia = None
-    if mostrar_prueba:
-        publicacion_ficticia = simular()
+    try:
+        mostrar_prueba = False
+        publicacion_ficticia = None
+        if mostrar_prueba:
+            publicacion_ficticia = simular()
 
-    enlaces = []
-    precios_guardados = {}
-    resultados = {}
-    enlaces_procesados = set()
+        initialize_firebase()
 
-    with open("links.txt", "r") as file:
-        enlaces = [line.strip() for line in file]
+        enlaces, precios_guardados, resultados = [], {}, {}
+        enlaces_procesados = set()
 
-    if publicacion_ficticia:
-        nombre, precio_nuevo, precio_anterior, descuento, oferta = publicacion_ficticia
-        enlace_ficticio = "https://google.com"
-        precio_actual_str = str(precio_nuevo)
-        precio_anterior_str = str(precio_anterior)
-        enlaces.append(enlace_ficticio)
+        try:
+            with open("links.txt", "r", encoding="utf-8") as file:
+                enlaces = [line.strip() for line in file if line.strip()]
+        except FileNotFoundError:
+            print("Error: No se encontró el archivo links.txt")
+            return
 
-    for enlace in enlaces:
-        if enlace in enlaces_procesados:
-            continue
-        enlaces_procesados.add(enlace)
+        if not enlaces:
+            print("No hay enlaces para procesar")
+            return
 
-        if enlace == "https://google.com":
-            nombre, precio_nuevo, precio_anterior, descuento, oferta = (
-                publicacion_ficticia
-            )
-            precio_nuevo_str = str(precio_nuevo)
-        else:
-            nombre, precio_nuevo_str, precio_anterior_str, descuento = obtener(enlace)
-
-            if nombre and precio_nuevo_str:
-                nombre = nombre[:32] + "..."
-            else:
+        for enlace in enlaces:
+            if not enlace or enlace in enlaces_procesados:
                 continue
 
-        if enlace not in precios_guardados:
-            precios_guardados[enlace] = {
-                "precio_actual": precio_nuevo_str,
-                "precio_anterior": None,
-                "descuento": descuento,
-                "oferta": None,
-            }
-        else:
-            precio_anterior = precios_guardados[enlace]["precio_actual"]
-            precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
-            precios_guardados[enlace]["precio_anterior"] = precio_anterior
+            enlaces_procesados.add(enlace)
 
-        resultados[enlace] = (
-            nombre,
-            precio_nuevo_str,
-            precios_guardados[enlace]["precio_anterior"],
-            descuento,
-        )
+            if enlace == "https://google.com" and publicacion_ficticia:
+                nombre, precio_nuevo, precio_anterior, descuento, oferta = (
+                    publicacion_ficticia
+                )
+                precio_nuevo_str = str(precio_nuevo)
+            else:
+                nombre, precio_nuevo_str, precio_anterior_str, descuento = obtener(
+                    enlace,
+                    precios_guardados.get(enlace, {}).get("precio_actual"),
+                    device_token,
+                )
 
-    html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
-    with open("index.html", "w", encoding="utf-8") as html_file:
-        html_file.write(html_content)
+                if not nombre or not precio_nuevo_str:
+                    print(f"No se pudieron obtener datos válidos para: {enlace}")
+                    continue
+
+                nombre = nombre[:32] + "..." if len(nombre) > 32 else nombre
+
+            if enlace not in precios_guardados:
+                precios_guardados[enlace] = {
+                    "precio_actual": precio_nuevo_str,
+                    "precio_anterior": None,
+                    "descuento": descuento,
+                    "oferta": None,
+                }
+            else:
+                precio_anterior = precios_guardados[enlace]["precio_actual"]
+                precios_guardados[enlace].update(
+                    {
+                        "precio_actual": precio_nuevo_str,
+                        "precio_anterior": precio_anterior,
+                    }
+                )
+
+            resultados[enlace] = (
+                nombre,
+                precio_nuevo_str,
+                precios_guardados[enlace]["precio_anterior"],
+                descuento,
+            )
+
+        html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
+
+        try:
+            with open("index.html", "w", encoding="utf-8") as html_file:
+                html_file.write(html_content)
+        except Exception as e:
+            print(f"Error al escribir index.html: {str(e)}")
+            return
+
+    except Exception as e:
+        print(f"Error general en main: {str(e)}")
 
 
 if __name__ == "__main__":
