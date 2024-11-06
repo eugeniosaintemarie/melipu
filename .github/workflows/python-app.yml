@@ -35,12 +35,12 @@ jobs:
           pip install requests beautifulsoup4 datetime pytz flake8 pyfcm firebase-admin
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+#      - uses: actions/cache@v3
+#        with:
+#          path: ~/.cache/pip
+#          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+#          restore-keys: |
+#            ${{ runner.os }}-pip-
 
       - name: Verify flake8 installation
         run: |
