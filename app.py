@@ -28,16 +28,6 @@ def initialize_firebase():
         raise
 
 
-link = "URL_DEL_PRODUCTO"
-previous_price = "PRECIO_ANTERIOR"
-device_token = "TOKEN_DEL_DISPOSITIVO"
-
-
-nombre, precio_actual, precio_anterior, descuento = obtener(
-    link, previous_price, device_token
-)
-
-
 def send_notification(token, title, body):
     message = messaging.Message(
         notification=messaging.Notification(
