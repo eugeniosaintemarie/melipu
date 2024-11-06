@@ -9,19 +9,17 @@ from firebase_admin import credentials, messaging
 
 
 def simular():
-    return "Titulo", 100000, 150000, "10%", 90000
+    return "Simulación", 100000, 150000, "10%", 90000
 
 
 def initialize_firebase():
     try:
         creds_json = os.getenv("FIREBASE_ADMIN_CREDENTIALS")
-
         if creds_json:
             creds_dict = json.loads(creds_json)
             cred = credentials.Certificate(creds_dict)
         else:
             cred = credentials.Certificate("serviceAccountKey.json")
-
         firebase_admin.initialize_app(cred)
     except Exception as e:
         print(f"Error inicializando Firebase: {str(e)}")
@@ -44,16 +42,8 @@ def obtener(link, previous_price, token):
         response = requests.get(link, timeout=30)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
-
         nombre_element = soup.find(class_="ui-pdp-title")
-        nombre = None
-        if nombre_element:
-            nombre = (
-                nombre_element.get_text().strip()
-                if isinstance(nombre_element, str)
-                else nombre_element.get_text().strip()
-            )
-
+        nombre = nombre_element.get_text().strip() if nombre_element else None
         precio_actual = None
         precio_anterior = None
         descuento = None
@@ -68,7 +58,6 @@ def obtener(link, previous_price, token):
                 if precio_obtenido
                 else None
             )
-
             precio_anterior_element = precio_element.find(
                 "s", class_="andes-money-amount__original"
             )
@@ -80,14 +69,12 @@ def obtener(link, previous_price, token):
                 if precio_anterior_element
                 else None
             )
-
             descuento_element = precio_element.find(
                 "span", class_="andes-money-amount__discount"
             )
             descuento = (
                 descuento_element.get_text().strip() if descuento_element else None
             )
-
         if (
             precio_actual
             and previous_price
@@ -101,7 +88,6 @@ def obtener(link, previous_price, token):
                 )
             except Exception as e:
                 print(f"Error al enviar notificación: {str(e)}")
-
         return nombre, precio_actual, precio_anterior, descuento
 
     except requests.RequestException as e:
@@ -210,6 +196,8 @@ def main():
             publicacion_ficticia = simular()
 
         initialize_firebase()
+
+        device_token = "TOKEN_DEL_DISPOSITIVO"
 
         enlaces, precios_guardados, resultados = [], {}, {}
         enlaces_procesados = set()
