@@ -8,8 +8,8 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 
 
-# def simular():
-#    return "Titulo", 100000, 150000, "10%", 90000
+def simular():
+    return "Titulo", 100000, 150000, "10%", 90000
 
 
 def initialize_firebase():
