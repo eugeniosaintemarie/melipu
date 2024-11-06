@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 import json
 import datetime
 import pytz
-import firebase_admin # type: ignore
-from firebase_admin import credentials, messaging # type: ignore
+import firebase_admin  # type: ignore
+from firebase_admin import credentials, messaging  # type: ignore
 
 
 def simular():
@@ -193,7 +193,7 @@ def main():
         mostrar_prueba = False
         publicacion_ficticia = None
         if mostrar_prueba:
-            publicacion_ficticia = simular()
+            publicacion_ficticia = simular()  # noqa: F821
 
         initialize_firebase()
 
