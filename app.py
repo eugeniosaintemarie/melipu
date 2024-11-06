@@ -228,6 +228,8 @@ def main():
         with open("output.html", "w", encoding="utf-8") as html_file:
             html_file.write(html_content)
         print("HTML generado exitosamente en output.html")
+    except Exception as e:
+        print(f"Error en la ejecución principal: {str(e)}")
 
 
 if __name__ == "__main__":
