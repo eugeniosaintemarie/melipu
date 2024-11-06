@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 import json
 import datetime
 import pytz
-import firebase_admin
-from firebase_admin import credentials, messaging
+import firebase_admin # type: ignore
+from firebase_admin import credentials, messaging # type: ignore
 
 
 def simular():
