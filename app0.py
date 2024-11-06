@@ -6,8 +6,8 @@ import datetime
 import pytz
 
 
-# def simular():
-#    return "Titulo", 100000, 150000, "10%", 90000
+def simular():
+    return "Titulo", 100000, 150000, "10%", 90000
 
 
 def obtener(link):
