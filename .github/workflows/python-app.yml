@@ -4,8 +4,8 @@ on:
   schedule:
     - cron: "0 * * * *"
   concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
   push:
     branches: ["gh-pages"]
   pull_request:
