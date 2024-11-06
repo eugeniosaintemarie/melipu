@@ -10,6 +10,30 @@ def simular():
     return "Titulo", 100000, 150000, "10%", 90000
 
 
+archivo_precios = "https://eugeniosaintemarie.github.io/melipu/precios_guardados.json"
+
+
+def cargar_precios():
+    try:
+        with open(archivo_precios, "r") as archivo:
+            return json.load(archivo)
+    except FileNotFoundError:
+        return {
+            "nombre": None,
+            "precio_actual": None,
+            "precio_anterior": None,
+            "descuento": None,
+        }
+
+
+def guardar_precios(precios):
+    with open(archivo_precios, "w") as archivo:
+        json.dump(precios, archivo)
+
+
+precios_guardados = cargar_precios()
+
+
 def obtener(link):
     response = requests.get(link)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -23,7 +47,6 @@ def obtener(link):
     )
 
     precio_actual = None
-    precio_anterior = None
     descuento = None
 
     precio_element = soup.find("div", class_="ui-pdp-price__second-line")
@@ -36,24 +59,27 @@ def obtener(link):
                 precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
             )
 
-        precio_anterior_element = precio_element.find(
-            "s", class_="andes-money-amount__original"
-        )
-        if precio_anterior_element:
-            precio_anterior = (
-                precio_anterior_element.get_text()
-                .strip()
-                .replace(".", "")
-                .replace(",", ".")
-            )
-
         descuento_element = precio_element.find(
             "span", class_="andes-money-amount__discount"
         )
         if descuento_element:
             descuento = descuento_element.get_text().strip()
 
-    return nombre, precio_actual, precio_anterior, descuento
+    if precios_guardados["precio_actual"] != precio_actual:
+        precios_guardados["precio_anterior"] = precios_guardados["precio_actual"]
+        precios_guardados["precio_actual"] = precio_actual
+
+    precios_guardados["nombre"] = nombre
+    precios_guardados["descuento"] = descuento
+
+    guardar_precios(precios_guardados)
+
+    return (
+        precios_guardados["nombre"],
+        precios_guardados["precio_actual"],
+        precios_guardados["precio_anterior"],
+        precios_guardados["descuento"],
+    )
 
 
 def generar_html(resultados, precios_guardados, simular):
@@ -127,7 +153,7 @@ def generar_html(resultados, precios_guardados, simular):
             <div class="item">
                 <a href="{enlace}" class="nombre">{nombre}</a></br>
                 <span class="mark_before">> </span><span class="precio_actual" id="{id_titulo}">{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span></br>
-                <span class="mark_after">< </span><span class="precio_anterior">{precio_anterior_formateado}</span></br>
+                <span class="mark_after">- </span><span class="precio_anterior">{precio_anterior_formateado}</span></br>
             </div>
             """
         except Exception as e:
