@@ -98,7 +98,7 @@ def obtener(link, previous_price, token):
         return None, None, None, None
 
 
-def generar_html(resultados, precios_guardados, simular):
+def generar_html(resultados, precios_guardados):
     html_content = """
     <!DOCTYPE html>
     <html lang="es">
@@ -213,64 +213,21 @@ def main():
             print("No hay enlaces para procesar")
             return
 
-        for enlace in enlaces:
-            if not enlace or enlace in enlaces_procesados:
-                continue
-
-            enlaces_procesados.add(enlace)
-
-            if enlace == "https://google.com" and publicacion_ficticia:
-                nombre, precio_nuevo, precio_anterior, descuento, oferta = (
-                    publicacion_ficticia
+        for link in enlaces:
+            if link not in enlaces_procesados:
+                resultados[link] = obtener(
+                    link, precios_guardados.get(link), device_token
                 )
-                precio_nuevo_str = str(precio_nuevo)
-            else:
-                nombre, precio_nuevo_str, precio_anterior_str, descuento = obtener(
-                    enlace,
-                    precios_guardados.get(enlace, {}).get("precio_actual"),
-                    device_token,
-                )
+                enlaces_procesados.add(link)
 
-                if not nombre or not precio_nuevo_str:
-                    print(f"No se pudieron obtener datos válidos para: {enlace}")
-                    continue
+        if publicacion_ficticia:
+            resultados["https://articulo-de-prueba.meli"] = publicacion_ficticia
 
-                nombre = nombre[:32] + "..." if len(nombre) > 32 else nombre
+        html_content = generar_html(resultados, precios_guardados)
 
-            if enlace not in precios_guardados:
-                precios_guardados[enlace] = {
-                    "precio_actual": precio_nuevo_str,
-                    "precio_anterior": None,
-                    "descuento": descuento,
-                    "oferta": None,
-                }
-            else:
-                precio_anterior = precios_guardados[enlace]["precio_actual"]
-                precios_guardados[enlace].update(
-                    {
-                        "precio_actual": precio_nuevo_str,
-                        "precio_anterior": precio_anterior,
-                    }
-                )
-
-            resultados[enlace] = (
-                nombre,
-                precio_nuevo_str,
-                precios_guardados[enlace]["precio_anterior"],
-                descuento,
-            )
-
-        html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
-
-        try:
-            with open("index.html", "w", encoding="utf-8") as html_file:
-                html_file.write(html_content)
-        except Exception as e:
-            print(f"Error al escribir index.html: {str(e)}")
-            return
-
-    except Exception as e:
-        print(f"Error general en main: {str(e)}")
+        with open("output.html", "w", encoding="utf-8") as html_file:
+            html_file.write(html_content)
+        print("HTML generado exitosamente en output.html")
 
 
 if __name__ == "__main__":
