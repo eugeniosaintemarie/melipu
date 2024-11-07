@@ -10,7 +10,7 @@ def simular():
     return "Titulo", 100000, 150000, "10%", 90000
 
 
-archivo_precios = "https://eugeniosaintemarie.github.io/melipu/precios_guardados.json"
+archivo_precios = "sprecios_guardados.json"
 
 
 def cargar_precios():
