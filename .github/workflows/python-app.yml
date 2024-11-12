@@ -65,14 +65,14 @@ jobs:
         if: always()
         run: rm -f serviceAccountKey.json
 
-      - name: Commit and push index.html
+      - name: Commit and push index.html and sprecios_guardados.json
         run: |
           git config --global user.name 'eugeniosaintemarie'
           git config --global user.email 'e.saintemarie@outlook.com'
-          git add index.html
+          git add index.html sprecios_guardados.json
           if git diff-index --quiet HEAD --; then
             echo "No changes to commit"
           else
-            git commit -m "Update index.html"
+            git commit -m "Update index.html and sprecios_guardados.json"
             git push https://${{ secrets.SHOP_PUBLICATIONS_AUT }}@github.com/eugeniosaintemarie/melipu.git gh-pages
           fi
