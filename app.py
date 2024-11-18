@@ -10,7 +10,7 @@ def simular():
     return "Titulo", 100000, 150000, "10%", 90000
 
 
-archivo_precios = "sprecios_guardados.json"
+archivo_precios = "precios_guardados.json"
 
 
 def cargar_precios():
@@ -65,20 +65,30 @@ def obtener(link):
         if descuento_element:
             descuento = descuento_element.get_text().strip()
 
-    if precios_guardados["precio_actual"] != precio_actual:
-        precios_guardados["precio_anterior"] = precios_guardados["precio_actual"]
-        precios_guardados["precio_actual"] = precio_actual
+    if link not in precios_guardados:
+        precios_guardados[link] = {
+            "nombre": nombre,
+            "precio_actual": None,
+            "precio_anterior": None,
+            "descuento": None,
+        }
 
-    precios_guardados["nombre"] = nombre
-    precios_guardados["descuento"] = descuento
+    if precios_guardados[link]["precio_actual"] != precio_actual:
+        precios_guardados[link]["precio_anterior"] = precios_guardados[link][
+            "precio_actual"
+        ]
+        precios_guardados[link]["precio_actual"] = precio_actual
+
+    precios_guardados[link]["nombre"] = nombre
+    precios_guardados[link]["descuento"] = descuento
 
     guardar_precios(precios_guardados)
 
     return (
-        precios_guardados["nombre"],
-        precios_guardados["precio_actual"],
-        precios_guardados["precio_anterior"],
-        precios_guardados["descuento"],
+        precios_guardados[link]["nombre"],
+        precios_guardados[link]["precio_actual"],
+        precios_guardados[link]["precio_anterior"],
+        precios_guardados[link]["descuento"],
     )
 
 

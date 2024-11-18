@@ -51,20 +51,6 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: Create Firebase credentials file
-        run: |
-          echo "${{ secrets.FIREBASE_CREDENTIALS }}" > serviceAccountKey.json
-
-      - name: Run app.py
-        env:
-          FIREBASE_ADMIN_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
-        run: |
-          python app.py
-
-      - name: Clean up credentials
-        if: always()
-        run: rm -f serviceAccountKey.json
-
       - name: Commit and push index.html and sprecios_guardados.json
         run: |
           git config --global user.name 'eugeniosaintemarie'
