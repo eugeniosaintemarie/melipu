@@ -18,12 +18,7 @@ def cargar_precios():
         with open(archivo_precios, "r") as archivo:
             return json.load(archivo)
     except FileNotFoundError:
-        return {
-            "nombre": None,
-            "precio_actual": None,
-            "precio_anterior": None,
-            "descuento": None,
-        }
+        return {}
 
 
 def guardar_precios(precios):
@@ -68,19 +63,19 @@ def obtener(link):
     if link not in precios_guardados:
         precios_guardados[link] = {
             "nombre": nombre,
-            "precio_actual": None,
+            "precio_actual": precio_actual,
             "precio_anterior": None,
-            "descuento": None,
+            "descuento": descuento,
         }
+    else:
+        if precios_guardados[link]["precio_actual"] != precio_actual:
+            precios_guardados[link]["precio_anterior"] = precios_guardados[link][
+                "precio_actual"
+            ]
+            precios_guardados[link]["precio_actual"] = precio_actual
 
-    if precios_guardados[link]["precio_actual"] != precio_actual:
-        precios_guardados[link]["precio_anterior"] = precios_guardados[link][
-            "precio_actual"
-        ]
-        precios_guardados[link]["precio_actual"] = precio_actual
-
-    precios_guardados[link]["nombre"] = nombre
-    precios_guardados[link]["descuento"] = descuento
+        precios_guardados[link]["nombre"] = nombre
+        precios_guardados[link]["descuento"] = descuento
 
     guardar_precios(precios_guardados)
 
@@ -132,21 +127,12 @@ def generar_html(resultados, precios_guardados, simular):
     <br/>
     """
 
-    for enlace, (
-        nombre,
-        precio_nuevo,
-        precio_anterior,
-        descuento,
-    ) in resultados.items():
-        nombre_publicacion = nombre
-        precio_nuevo_str = precio_nuevo
-        precio_anterior_str = precio_anterior
+    for enlace, datos in resultados.items():
+        nombre, precio_nuevo_str, precio_anterior_str, descuento = datos
 
         try:
             precio_nuevo = float(precio_nuevo_str) if precio_nuevo_str else None
-            id_titulo = (
-                nombre_publicacion.replace(" ", "_").replace("...", "").rstrip("_")
-            )
+            id_titulo = nombre.replace(" ", "_").replace("...", "").rstrip("_")
             precio_anterior = (
                 float(precio_anterior_str) if precio_anterior_str else None
             )
@@ -167,11 +153,13 @@ def generar_html(resultados, precios_guardados, simular):
             </div>
             """
         except Exception as e:
+            print(f"Error generando HTML para {enlace}: {e}")
             continue
 
     actualizacion = datetime.datetime.now(
         pytz.timezone("America/Argentina/Buenos_Aires")
     ).strftime("%H:%M %d.%m.%y")
+
     html_content += f"""
     <div class="actualizacion">
         <br/>{actualizacion}
