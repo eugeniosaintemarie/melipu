@@ -113,7 +113,6 @@ def generar_html(resultados, precios_guardados, simular):
         <link rel="apple-touch-icon" href="./image/icon/icon-512x512.png" />
         <meta name="apple-mobile-web-app-status-bar" content="#FFD101" />
         <meta name="theme-color" content="#FFD101" />
-        <script src="./app.js"></script>
         <style>
             body { font-family: 'Roboto', Arial, sans-serif; background-color: black; color: white; }
             .item { margin-bottom: 20px; }
