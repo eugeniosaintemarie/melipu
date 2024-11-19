@@ -66,3 +66,4 @@ jobs:
         else
           git commit -m "Update index.html and precios_guardados.json"
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:gh-pages
+        fi
