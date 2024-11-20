@@ -213,23 +213,11 @@ def main():
             else:
                 continue
 
-        if enlace not in precios_guardados:
-            precios_guardados[enlace] = {
-                "precio_actual": precio_nuevo_str,
-                "precio_anterior": None,
-                "descuento": descuento,
-                "oferta": None,
-            }
-        else:
-            precio_anterior = precios_guardados[enlace]["precio_actual"]
-            precios_guardados[enlace]["precio_actual"] = precio_nuevo_str
-            precios_guardados[enlace]["precio_anterior"] = precio_anterior
-
         resultados[enlace] = (
             nombre,
-            precio_nuevo_str,
+            precios_guardados[enlace]["precio_actual"],
             precios_guardados[enlace]["precio_anterior"],
-            descuento,
+            precios_guardados[enlace]["descuento"],
         )
 
     html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
