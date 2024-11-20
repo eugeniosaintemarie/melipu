@@ -215,9 +215,9 @@ def main():
 
         resultados[enlace] = (
             nombre,
-            precios_guardados[enlace]["precio_actual"],
-            precios_guardados[enlace]["precio_anterior"],
-            precios_guardados[enlace]["descuento"],
+            precios_guardados.get(enlace, {}).get("precio_actual"),
+            precios_guardados.get(enlace, {}).get("precio_anterior"),
+            precios_guardados.get(enlace, {}).get("descuento"),
         )
 
     html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
