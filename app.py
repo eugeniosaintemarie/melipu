@@ -2,6 +2,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import json
+import hashlib
 import datetime
 import pytz
 
@@ -32,6 +33,10 @@ def guardar_precios(precios):
 
 
 precios_guardados = cargar_precios()
+
+
+def generar_id_unico(link):
+    return hashlib.md5(link.encode()).hexdigest()
 
 
 def obtener(link):
@@ -65,34 +70,31 @@ def obtener(link):
         if descuento_element:
             descuento = descuento_element.get_text().strip()
 
-    if link not in precios_guardados:
-        precios_guardados[link] = {
-            "nombre": nombre,
-            "precio_actual": precio_actual,
-            "precio_anterior": None,
-            "descuento": descuento,
-        }
-    else:
-        if precios_guardados[link]["precio_actual"] != precio_actual:
-            precios_guardados[link]["precio_anterior"] = precios_guardados[link][
-                "precio_actual"
-            ]
-            precios_guardados[link]["precio_actual"] = precio_actual
+    return nombre, precio_actual, descuento
 
-        precios_guardados[link]["nombre"] = nombre
-        precios_guardados[link]["descuento"] = descuento
+
+def procesar_links():
+    nuevos_links = []
+
+    with open("links.txt", "r") as file:
+        for link in file:
+            link = link.strip()
+            id_unico = generar_id_unico(link)
+            if id_unico not in precios_guardados:
+                precios_guardados[id_unico] = {
+                    "link": link,
+                    "nombre": None,
+                    "precio_actual": None,
+                    "precio_anterior": None,
+                    "descuento": None,
+                }
+                nuevos_links.append((id_unico, link))
 
     guardar_precios(precios_guardados)
-
-    return (
-        precios_guardados[link]["nombre"],
-        precios_guardados[link]["precio_actual"],
-        precios_guardados[link]["precio_anterior"],
-        precios_guardados[link]["descuento"],
-    )
+    return nuevos_links
 
 
-def generar_html(resultados, precios_guardados, simular):
+def generar_html(resultados):
     html_content = """
     <!DOCTYPE html>
     <html lang="es">
@@ -131,15 +133,17 @@ def generar_html(resultados, precios_guardados, simular):
     <br/>
     """
 
-    for enlace, datos in resultados.items():
-        nombre, precio_nuevo_str, precio_anterior_str, descuento = datos
+    for id_unico, datos in resultados.items():
+        link = datos["link"]
+        nombre = datos["nombre"]
+        precio_actual = datos["precio_actual"]
+        precio_anterior = datos["precio_anterior"]
+        descuento = datos["descuento"]
 
         try:
-            precio_nuevo = float(precio_nuevo_str) if precio_nuevo_str else None
+            precio_nuevo = float(precio_actual) if precio_actual else None
             id_titulo = nombre.replace(" ", "_").replace("...", "").rstrip("_")
-            precio_anterior = (
-                float(precio_anterior_str) if precio_anterior_str else None
-            )
+            precio_anterior = float(precio_anterior) if precio_anterior else None
 
             precio_nuevo_formateado = (
                 f"${precio_nuevo:,.0f}".replace(",", ".") if precio_nuevo else ""
@@ -151,13 +155,12 @@ def generar_html(resultados, precios_guardados, simular):
 
             html_content += f"""
             <div class="item">
-                <a href="{enlace}" class="nombre">{nombre}</a></br>
+                <a href="{link}" class="nombre">{nombre}</a></br>
                 <span class="mark_before">> </span><span class="precio_actual" id="{id_titulo}">{precio_nuevo_formateado}</span><span class="descuento"> {descuento}</span></br>
                 <span class="mark_after">- </span><span class="precio_anterior">{precio_anterior_formateado}</span></br>
             </div>
             """
         except Exception as e:
-            print(f"Error generando HTML para {enlace}: {e}")
             continue
 
     actualizacion = datetime.datetime.now(
@@ -175,52 +178,25 @@ def generar_html(resultados, precios_guardados, simular):
 
 
 def main():
-    mostrar_prueba = False
-    publicacion_ficticia = None
-    if mostrar_prueba:
-        publicacion_ficticia = simular()
+    nuevos_links = procesar_links()
 
-    enlaces = []
-    precios_guardados = {}
     resultados = {}
-    enlaces_procesados = set()
+    for id_unico, datos in precios_guardados.items():
+        link = datos["link"]
+        nombre, precio_actual, descuento = obtener(link)
 
-    with open("links.txt", "r") as file:
-        enlaces = [line.strip() for line in file]
+        if datos["precio_actual"] != precio_actual:
+            precios_guardados[id_unico]["precio_anterior"] = datos["precio_actual"]
+            precios_guardados[id_unico]["precio_actual"] = precio_actual
 
-    if publicacion_ficticia:
-        nombre, precio_nuevo, precio_anterior, descuento, oferta = publicacion_ficticia
-        enlace_ficticio = "https://google.com"
-        precio_actual_str = str(precio_nuevo)
-        precio_anterior_str = str(precio_anterior)
-        enlaces.append(enlace_ficticio)
+        precios_guardados[id_unico]["nombre"] = nombre
+        precios_guardados[id_unico]["descuento"] = descuento
 
-    for enlace in enlaces:
-        if enlace in enlaces_procesados:
-            continue
-        enlaces_procesados.add(enlace)
+        resultados[id_unico] = precios_guardados[id_unico]
 
-        if enlace == "https://google.com":
-            nombre, precio_nuevo, precio_anterior, descuento, oferta = (
-                publicacion_ficticia
-            )
-            precio_nuevo_str = str(precio_nuevo)
-        else:
-            nombre, precio_nuevo_str, precio_anterior_str, descuento = obtener(enlace)
+    guardar_precios(precios_guardados)
 
-            if nombre and precio_nuevo_str:
-                nombre = nombre[:32] + "..."
-            else:
-                continue
-
-        resultados[enlace] = (
-            nombre,
-            precios_guardados[enlace]["precio_actual"],
-            precios_guardados[enlace]["precio_anterior"],
-            precios_guardados[enlace]["descuento"],
-        )
-
-    html_content = generar_html(resultados, precios_guardados, publicacion_ficticia)
+    html_content = generar_html(resultados)
     with open("index.html", "w", encoding="utf-8") as html_file:
         html_file.write(html_content)
 
