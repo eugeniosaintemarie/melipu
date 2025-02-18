@@ -28,8 +28,21 @@ def cargar_precios():
 
 
 def guardar_precios(precios):
+    precios_existentes = cargar_precios()
+    
+    for id_unico, datos in precios.items():
+        precio_actual = datos.get("precio_actual")
+        
+        if id_unico in precios_existentes:
+            precio_anterior_guardado = precios_existentes[id_unico].get("precio_actual")
+            
+            if precio_actual and precio_actual != precio_anterior_guardado:
+                precios[id_unico]["precio_anterior"] = precio_anterior_guardado
+        
+        precios_existentes[id_unico] = precios[id_unico]
+    
     with open(archivo_precios, "w") as archivo:
-        json.dump(precios, archivo)
+        json.dump(precios_existentes, archivo)
 
 
 precios_guardados = cargar_precios()
