@@ -6,7 +6,6 @@ import hashlib
 import datetime
 import pytz
 
-# agregando varios precios, en 1 pago o en cuotas
 
 def simular():
     return "Titulo", 100000, 150000, "10%", 90000
