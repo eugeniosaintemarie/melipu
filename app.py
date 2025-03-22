@@ -69,19 +69,89 @@ def obtener(link):
 
     # Buscar el precio de un solo pago (1 pago)
     precio_un_pago = None
-    precio_elements = soup.find_all("div", class_="ui-pdp-price__second-line")
     
-    # Si no encontramos elementos con "1 pago", usamos el primer precio que encontremos
-    # que generalmente es el precio principal del producto
-    if precio_elements:
-        precio_element = precio_elements[0]
-        precio_obtenido = precio_element.find(
-            "span", class_="andes-money-amount__fraction"
-        )
-        if precio_obtenido:
-            precio_actual = (
-                precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
-            )
+    # Intentamos diferentes estrategias para encontrar el precio de un solo pago
+    
+    # Estrategia 1: Buscar elementos con texto "1 pago" o "Precio de contado"
+    pago_texts = ['1 pago', 'precio de contado', 'precio contado', 'precio efectivo', 'en un pago']
+    for pago_text in pago_texts:
+        subtitle_elements = soup.find_all(string=lambda text: text and pago_text in text.lower())
+        
+        if subtitle_elements:
+            for elem in subtitle_elements:
+                # Buscar hacia arriba en el árbol DOM para encontrar el contenedor de precio
+                parent = elem.parent
+                price_container = None
+                
+                # Buscar hasta 5 niveles hacia arriba
+                for _ in range(5):
+                    if parent and parent.name:
+                        # Primero intentamos encontrar el precio directamente
+                        price_container = parent.find('span', class_='andes-money-amount__fraction')
+                        if price_container:
+                            break
+                            
+                        # Si no lo encontramos, buscamos en el contenedor padre
+                        parent = parent.parent
+                    else:
+                        break
+                
+                if price_container:
+                    precio_actual = price_container.get_text().strip().replace(".", "").replace(",", ".")
+                    break
+            
+            if precio_actual:
+                break
+    
+    # Estrategia 2: Buscar el precio principal (generalmente el primero)
+    if not precio_actual:
+        # Buscar todos los contenedores de precio
+        price_containers = soup.find_all('div', class_='ui-pdp-price')
+        
+        if price_containers:
+            # Primero intentar encontrar un contenedor que tenga texto de un solo pago
+            for container in price_containers:
+                # Verificar si este contenedor menciona un solo pago
+                pago_element = container.find(string=lambda text: text and any(pago_text in text.lower() for pago_text in pago_texts))
+                if pago_element:
+                    price_fraction = container.find('span', class_='andes-money-amount__fraction')
+                    if price_fraction:
+                        precio_actual = price_fraction.get_text().strip().replace(".", "").replace(",", ".")
+                        break
+            
+            # Si no encontramos un contenedor con texto de un solo pago, buscamos uno sin cuotas
+            if not precio_actual:
+                for container in price_containers:
+                    # Verificar si este contenedor no menciona cuotas
+                    if not container.find(string=lambda text: text and 'cuota' in text.lower()):
+                        price_fraction = container.find('span', class_='andes-money-amount__fraction')
+                        if price_fraction:
+                            precio_actual = price_fraction.get_text().strip().replace(".", "").replace(",", ".")
+                            break
+    
+    # Estrategia 3: Buscar en todos los elementos de precio y priorizar el que tenga texto de un solo pago
+    if not precio_actual:
+        precio_elements = soup.find_all("div", class_="ui-pdp-price__second-line")
+        
+        if precio_elements:
+            # Primero intentamos encontrar un elemento que tenga texto de un solo pago
+            for precio_element in precio_elements:
+                # Buscar si hay algún texto de un solo pago cerca
+                parent_container = precio_element.find_parent('div', class_='ui-pdp-price')
+                if parent_container:
+                    pago_element = parent_container.find(string=lambda text: text and any(pago_text in text.lower() for pago_text in pago_texts))
+                    if pago_element:
+                        precio_obtenido = precio_element.find("span", class_="andes-money-amount__fraction")
+                        if precio_obtenido:
+                            precio_actual = precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
+                            break
+            
+            # Si no encontramos ninguno con texto de un solo pago, usamos el primero como fallback
+            if not precio_actual and precio_elements:
+                precio_element = precio_elements[0]
+                precio_obtenido = precio_element.find("span", class_="andes-money-amount__fraction")
+                if precio_obtenido:
+                    precio_actual = precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
     
     # Buscar el descuento
     precio_element = soup.find("div", class_="ui-pdp-price__second-line")
