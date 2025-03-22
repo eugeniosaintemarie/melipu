@@ -67,16 +67,43 @@ def obtener(link):
     precio_actual = None
     descuento = None
 
+    # Buscar el precio de un solo pago (1 pago)
+    precio_un_pago = None
+    precio_elements = soup.find_all("div", class_="ui-pdp-price__second-line")
+    
+    # Primero intentamos encontrar el precio de un solo pago
+    for precio_element in precio_elements:
+        # Buscar si hay un elemento que indique "1 pago"
+        payment_info = precio_element.find_previous(string=lambda text: text and "1 pago" in text.lower())
+        
+        if payment_info:
+            precio_obtenido = precio_element.find(
+                "span", class_="andes-money-amount__fraction"
+            )
+            if precio_obtenido:
+                precio_un_pago = (
+                    precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
+                )
+                break
+    
+    # Si encontramos precio de un solo pago, lo usamos como precio_actual
+    if precio_un_pago:
+        precio_actual = precio_un_pago
+    else:
+        # Si no hay precio de un solo pago, usamos el primer precio que encontremos
+        precio_element = soup.find("div", class_="ui-pdp-price__second-line")
+        if precio_element:
+            precio_obtenido = precio_element.find(
+                "span", class_="andes-money-amount__fraction"
+            )
+            if precio_obtenido:
+                precio_actual = (
+                    precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
+                )
+
+    # Buscar el descuento
     precio_element = soup.find("div", class_="ui-pdp-price__second-line")
     if precio_element:
-        precio_obtenido = precio_element.find(
-            "span", class_="andes-money-amount__fraction"
-        )
-        if precio_obtenido:
-            precio_actual = (
-                precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
-            )
-
         descuento_element = precio_element.find(
             "span", class_="andes-money-amount__discount"
         )
