@@ -39,7 +39,10 @@ def guardar_precios(precios):
             if precio_actual and precio_actual != precio_anterior_guardado:
                 precios[id_unico]["precio_anterior"] = precio_anterior_guardado
         
-        precios_existentes[id_unico] = precios[id_unico]
+        if id_unico in precios_existentes:
+            precios_existentes[id_unico].update(precios[id_unico])
+        else:
+            precios_existentes[id_unico] = precios[id_unico]
     
     with open(archivo_precios, "w") as archivo:
         json.dump(precios_existentes, archivo)
