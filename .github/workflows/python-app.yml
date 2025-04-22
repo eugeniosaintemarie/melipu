@@ -4,10 +4,6 @@ on:
   schedule:
     - cron: '*/1 * * * *'
   workflow_dispatch:
-  workflow_run:
-    workflows: ["pages build and deployment"]
-    types:
-      - completed
 
 permissions:
   contents: write
@@ -16,7 +12,6 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     
     steps:
     - uses: actions/checkout@v3
