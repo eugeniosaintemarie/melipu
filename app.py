@@ -102,7 +102,7 @@ def obtener(link):
                             precio_actual = price_fraction.get_text().strip().replace(".", "").replace(",", ".")
                             break
     if not precio_actual:
-        precio_elements = soup.find_all("div", class_="andes-money-amount ui-pdp-price__part ui-pdp-price__original-value andes-money-amount--previous andes-money-amount--cents-superscript andes-money-amount--compact")
+        precio_elements = soup.find_all("div", class_="ui-pdp-price__second-line")
         if precio_elements:
             for precio_element in precio_elements:
                 parent_container = precio_element.find_parent('div', class_='ui-pdp-price')
@@ -118,10 +118,10 @@ def obtener(link):
                 precio_obtenido = precio_element.find("span", class_="andes-money-amount__fraction")
                 if precio_obtenido:
                     precio_actual = precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
-    precio_element = soup.find("div", class_="andes-money-amount ui-pdp-price__part ui-pdp-price__original-value andes-money-amount--previous andes-money-amount--cents-superscript andes-money-amount--compact")
+    precio_element = soup.find("div", class_="ui-pdp-price__second-line")
     if precio_element:
         descuento_element = precio_element.find(
-            "span", class_="andes-money-amount ui-pdp-price__part andes-money-amount--cents-superscript andes-money-amount--compact"
+            "span", class_="andes-money-amount__discount"
         )
         if descuento_element:
             descuento = descuento_element.get_text().strip()
