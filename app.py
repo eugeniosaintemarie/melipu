@@ -187,9 +187,6 @@ def generar_html(resultados):
     </head>
     <body>
     <br/>
-    <h3>MercadoTrack</h3>
-    <a href="https://mercadotrack.com/MLA" target="_blank" style="color:rgb(17 82 253); font-size:18px; text-decoration:none;">https://mercadotrack.com/MLA</a>
-    <br/>
     """
     for id_unico, datos in resultados.items():
         link = datos["link"]
@@ -222,7 +219,9 @@ def generar_html(resultados):
     ).strftime("%H:%M %d.%m.%y")
     html_content += f"""
     <div class="actualizacion">
-        <br/>{actualizacion}
+        <br/>
+        <a href="https://mercadotrack.com/MLA" target="_blank" class="actualizacion" style="color:rgb(17 82 253) !important; text-decoration:none !important;">MercadoTrack </a>
+        {actualizacion}
     </div>
     </body>
     </html>
