@@ -155,6 +155,9 @@ def generar_html(resultados):
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>MELIPU</title>
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
         <link rel="icon" type="image/svg+xml" href="https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/5.21.22/mercadolibre/favicon.svg">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <link rel="manifest" href="./manifest.json" />
@@ -183,6 +186,9 @@ def generar_html(resultados):
         </style>
     </head>
     <body>
+    <br/>
+    <h3>MercadoTrack</h3>
+    <a href="https://mercadotrack.com/MLA" target="_blank" style="color:rgb(17 82 253); font-size:18px; text-decoration:none;">https://mercadotrack.com/MLA</a>
     <br/>
     """
     for id_unico, datos in resultados.items():
