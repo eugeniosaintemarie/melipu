@@ -160,6 +160,7 @@ def generar_html(resultados):
         <meta http-equiv="Expires" content="0" />
         <link rel="icon" type="image/svg+xml" href="https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/5.21.22/mercadolibre/favicon.svg">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <link rel="manifest" href="./manifest.json" />
         <link rel="apple-touch-icon" href="./image/icon/icon-72x72.png" />
         <link rel="apple-touch-icon" href="./image/icon/icon-96x96.png" />
@@ -222,6 +223,7 @@ def generar_html(resultados):
         <br/>
         <a href="https://mercadotrack.com/MLA" target="_blank" class="actualizacion" style="color:rgb(17 82 253) !important; text-decoration:none !important;">MercadoTrack </a>
         {actualizacion}
+        <a href="https://github.com/YOUR_USERNAME/YOUR_REPOSITORY/actions/workflows/python-app.yml" target="_blank" title="Actualizar manualmente" style="margin-left: 5px; color: #607D8B; text-decoration: none;"> <i class="fas fa-sync-alt"></i></a>
     </div>
     </body>
     </html>
