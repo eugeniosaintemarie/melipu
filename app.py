@@ -223,7 +223,7 @@ def generar_html(resultados):
         <br/>
         <a href="https://mercadotrack.com/MLA" target="_blank" class="actualizacion" style="color:rgb(17 82 253) !important; text-decoration:none !important;">MercadoTrack </a>
         {actualizacion}
-        <a href="https://github.com/eugeniosaintemarie/melipu/actions/workflows/python-app.yml" target="_blank" title="Actualizar manualmente" style="margin-left: 5px; color: #607D8B; text-decoration: none;"> <i class="fas fa-sync-alt"></i></a>
+        <a href="https://github.com/eugeniosaintemarie/melipu/actions/workflows/python-app.yml" target="_blank" title="Actualizar manualmente" style="margin-left: 5px; color: #607D8B; text-decoration: none;"><i class="fas fa-sync-alt"></i></a>
     </div>
     </body>
     </html>
