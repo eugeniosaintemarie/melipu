@@ -5,6 +5,7 @@ import json
 import hashlib
 import datetime
 import pytz
+import copy
 
 
 #def simular():
@@ -27,21 +28,9 @@ def cargar_precios():
         return {}
 
 
-def guardar_precios(precios):
-    precios_existentes = cargar_precios()
-    
-    for id_unico, datos in precios.items():
-        precio_actual = datos.get("precio_actual")
-        if id_unico in precios_existentes:
-            precio_anterior_guardado = precios_existentes[id_unico].get("precio_actual")
-            if precio_actual and precio_actual != precio_anterior_guardado:
-                precios[id_unico]["precio_anterior"] = precio_anterior_guardado
-        if id_unico in precios_existentes:
-            precios_existentes[id_unico].update(precios[id_unico])
-        else:
-            precios_existentes[id_unico] = precios[id_unico]
+def guardar_precios(data_to_save):
     with open(archivo_precios, "w") as archivo:
-        json.dump(precios_existentes, archivo)
+        json.dump(data_to_save, archivo)
 
 
 precios_guardados = cargar_precios()
@@ -49,6 +38,22 @@ precios_guardados = cargar_precios()
 
 def generar_id_unico(link):
     return hashlib.md5(link.encode()).hexdigest()
+
+
+def procesar_links(current_prices_from_json):
+    with open("links.txt", "r") as file:
+        for link in file:
+            link = link.strip()
+            id_unico = generar_id_unico(link)
+            if id_unico not in current_prices_from_json:
+                current_prices_from_json[id_unico] = {
+                    "link": link,
+                    "nombre": None,
+                    "precio_actual": None,
+                    "precio_anterior": None,
+                    "descuento": None,
+                }
+    return current_prices_from_json
 
 
 def obtener(link):
@@ -126,25 +131,6 @@ def obtener(link):
         if descuento_element:
             descuento = descuento_element.get_text().strip()
     return nombre, precio_actual, descuento
-
-
-def procesar_links():
-    nuevos_links = []
-    with open("links.txt", "r") as file:
-        for link in file:
-            link = link.strip()
-            id_unico = generar_id_unico(link)
-            if id_unico not in precios_guardados:
-                precios_guardados[id_unico] = {
-                    "link": link,
-                    "nombre": None,
-                    "precio_actual": None,
-                    "precio_anterior": None,
-                    "descuento": None,
-                }
-                nuevos_links.append((id_unico, link))
-    guardar_precios(precios_guardados)
-    return nuevos_links
 
 
 def generar_html(resultados):
@@ -232,19 +218,27 @@ def generar_html(resultados):
 
 
 def main():
-    nuevos_links = procesar_links()
-    resultados = {}
-    for id_unico, datos in precios_guardados.items():
-        link = datos["link"]
-        nombre, precio_actual, descuento = obtener(link)
-        if datos["precio_actual"] != precio_actual:
-            precios_guardados[id_unico]["precio_anterior"] = datos["precio_actual"]
-            precios_guardados[id_unico]["precio_actual"] = precio_actual
-        precios_guardados[id_unico]["nombre"] = nombre
-        precios_guardados[id_unico]["descuento"] = descuento
-        resultados[id_unico] = precios_guardados[id_unico]
-    guardar_precios(precios_guardados)
-    html_content = generar_html(resultados)
+    precios_json_inicio_run = cargar_precios()
+    items_a_procesar = procesar_links(copy.deepcopy(precios_json_inicio_run))
+    resultados_finales = {}
+    for id_unico, datos_template in items_a_procesar.items():
+        link = datos_template["link"]
+        nombre_scraped, precio_actual_scraped, descuento_scraped = obtener(link)
+        precio_actual_viejo_de_json = precios_json_inicio_run.get(id_unico, {}).get("precio_actual")
+        item_final_data = {}
+        item_final_data["link"] = link
+        item_final_data["nombre"] = nombre_scraped
+        item_final_data["descuento"] = descuento_scraped
+        item_final_data["precio_actual"] = precio_actual_scraped
+        if precio_actual_scraped is not None and precio_actual_scraped != precio_actual_viejo_de_json:
+            item_final_data["precio_anterior"] = precio_actual_viejo_de_json
+        elif precio_actual_viejo_de_json is not None and precio_actual_scraped is None:
+            item_final_data["precio_anterior"] = precio_actual_viejo_de_json
+        else:
+            item_final_data["precio_anterior"] = precios_json_inicio_run.get(id_unico, {}).get("precio_anterior")
+        resultados_finales[id_unico] = item_final_data
+    guardar_precios(resultados_finales)
+    html_content = generar_html(resultados_finales)
     with open("index.html", "w", encoding="utf-8") as html_file:
         html_file.write(html_content)
 
