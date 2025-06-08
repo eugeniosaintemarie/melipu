@@ -68,27 +68,6 @@ def obtener(link):
     )
     precio_actual = None
     descuento = None
-    precio_un_pago = None
-    pago_texts = ['1 pago', 'precio de contado', 'precio contado', 'precio efectivo', 'en un pago']
-    for pago_text in pago_texts:
-        subtitle_elements = soup.find_all(string=lambda text: text and pago_text in text.lower())
-        if subtitle_elements:
-            for elem in subtitle_elements:
-                parent = elem.parent
-                price_container = None
-                for _ in range(5):
-                    if parent and parent.name:
-                        price_container = parent.find('span', class_='andes-money-amount__fraction')
-                        if price_container:
-                            break
-                        parent = parent.parent
-                    else:
-                        break
-                if price_container:
-                    precio_actual = price_container.get_text().strip().replace(".", "").replace(",", ".")
-                    break
-            if precio_actual:
-                break
     if not precio_actual:
         price_containers = soup.find_all('div', class_='ui-pdp-price')
         if price_containers:
