@@ -72,12 +72,10 @@ def obtener(link):
         price_containers = soup.find_all('div', class_='ui-pdp-price')
         if price_containers:
             for container in price_containers:
-                pago_element = container.find(string=lambda text: text and any(pago_text in text.lower() for pago_text in pago_texts))
-                if pago_element:
-                    price_fraction = container.find('span', class_='andes-money-amount__fraction')
-                    if price_fraction:
-                        precio_actual = price_fraction.get_text().strip().replace(".", "").replace(",", ".")
-                        break
+                price_fraction = container.find('span', class_='andes-money-amount__fraction')
+                if price_fraction:
+                    precio_actual = price_fraction.get_text().strip().replace(".", "").replace(",", ".")
+                    break
             if not precio_actual:
                 for container in price_containers:
                     if not container.find(string=lambda text: text and 'cuota' in text.lower()):
@@ -90,13 +88,10 @@ def obtener(link):
         if precio_elements:
             for precio_element in precio_elements:
                 parent_container = precio_element.find_parent('div', class_='ui-pdp-price')
-                if parent_container:
-                    pago_element = parent_container.find(string=lambda text: text and any(pago_text in text.lower() for pago_text in pago_texts))
-                    if pago_element:
-                        precio_obtenido = precio_element.find("span", class_="andes-money-amount__fraction")
-                        if precio_obtenido:
-                            precio_actual = precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
-                            break
+                precio_obtenido = precio_element.find("span", class_="andes-money-amount__fraction")
+                if precio_obtenido:
+                    precio_actual = precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
+                    break
             if not precio_actual and precio_elements:
                 precio_element = precio_elements[0]
                 precio_obtenido = precio_element.find("span", class_="andes-money-amount__fraction")
