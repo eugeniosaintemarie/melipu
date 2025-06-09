@@ -89,8 +89,8 @@ def obtener(link):
         descuento = descuento.find(
             "span", class_="andes-money-amount__discount"
         )
-        if descuento_element:
-            descuento = descuento_element.get_text().strip()
+        if descuento:
+            descuento = descuento.get_text().strip()
     return nombre, precio_actual, descuento
 
 
