@@ -68,38 +68,25 @@ def obtener(link):
     )
     precio_actual = None
     descuento = None
+    class_hierarchy = [
+        ["andes-money-amount", "ui-pdp-price__part", "andes-money-amount--cents-superscript", "andes-money-amount--compact"],
+        ["price-part"],
+        ["ui-pdp-price__second-line"],
+        ["ui-pdp-price__main-container"]
+    ]
+    for classes in class_hierarchy:
+        selector = "." + ".".join(classes) + " .andes-money-amount__fraction"
+        price_fraction = soup.select_one(selector)
+        if price_fraction:
+            precio_actual = price_fraction.get_text().strip().replace(".", "").replace(",", ".")
+            break
     if not precio_actual:
-        price_containers = soup.find_all('div', class_='ui-pdp-price')
-        if price_containers:
-            for container in price_containers:
-                price_fraction = container.find('span', class_='andes-money-amount__fraction')
-                if price_fraction:
-                    precio_actual = price_fraction.get_text().strip().replace(".", "").replace(",", ".")
-                    break
-            if not precio_actual:
-                for container in price_containers:
-                    if not container.find(string=lambda text: text and 'cuota' in text.lower()):
-                        price_fraction = container.find('span', class_='andes-money-amount__fraction')
-                        if price_fraction:
-                            precio_actual = price_fraction.get_text().strip().replace(".", "").replace(",", ".")
-                            break
-    if not precio_actual:
-        precio_elements = soup.find_all("div", class_="ui-pdp-price__second-line")
-        if precio_elements:
-            for precio_element in precio_elements:
-                parent_container = precio_element.find_parent('div', class_='ui-pdp-price')
-                precio_obtenido = precio_element.find("span", class_="andes-money-amount__fraction")
-                if precio_obtenido:
-                    precio_actual = precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
-                    break
-            if not precio_actual and precio_elements:
-                precio_element = precio_elements[0]
-                precio_obtenido = precio_element.find("span", class_="andes-money-amount__fraction")
-                if precio_obtenido:
-                    precio_actual = precio_obtenido.get_text().strip().replace(".", "").replace(",", ".")
-    precio_element = soup.find("div", class_="ui-pdp-price__second-line")
-    if precio_element:
-        descuento_element = precio_element.find(
+        price_fraction = soup.find('span', class_='andes-money-amount__fraction')
+        if price_fraction:
+            precio_actual = price_fraction.get_text().strip().replace(".", "").replace(",", ".")
+    descuento = soup.find("div", class_="ui-pdp-price__second-line")
+    if descuento:
+        descuento = descuento.find(
             "span", class_="andes-money-amount__discount"
         )
         if descuento_element:
